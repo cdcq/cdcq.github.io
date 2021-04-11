@@ -34,7 +34,7 @@
 <meta property="article:modified_time" content="2021-04-10T15:24:58.785Z">
 <meta property="article:author" content="cdcq">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://www.wootec.top/img/avatar.png"><title>friends | cdcq</title><link ref="canonical" href="http://cdcq.github.io/friends/index.html"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.12.1/css/all.min.css" type="text/css"><link rel="stylesheet" href="/css/index.css?v=2.6.2"><script>var Stun = window.Stun || {};
+<meta name="twitter:image" content="https://www.wootec.top/img/avatar.png"><title>friends | cdcq</title><link ref="canonical" href="http://cdcq.github.io/friends/index.html"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.12.1/css/all.min.css" type="text/css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.css" type="text/css"><link rel="stylesheet" href="/css/index.css?v=2.6.2"><script>var Stun = window.Stun || {};
 var CONFIG = {
   root: '/',
   algolia: undefined,
@@ -152,7 +152,7 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 5.4.0"></he
         <h1 id="如果没看到你请联系我加"   >
           <a href="#如果没看到你请联系我加" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#如果没看到你请联系我加"></a> 如果没看到你请联系我加！</h1>
       
-</div></div></div><div class="sidebar-wrap" id="sidebar-wrap"><aside class="sidebar" id="sidebar"><section class="sidebar-toc hide"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#xdsec"><span class="toc-number">1.</span> <span class="toc-text">
+</div></div><div class="comments" id="comments"><div id="gitalk-container"></div></div></div><div class="sidebar-wrap" id="sidebar-wrap"><aside class="sidebar" id="sidebar"><section class="sidebar-toc hide"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#xdsec"><span class="toc-number">1.</span> <span class="toc-text">
            XDSEC</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#acm"><span class="toc-number">2.</span> <span class="toc-text">
            ACM</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#oi"><span class="toc-number">3.</span> <span class="toc-text">
            OI</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E6%B2%A1%E7%9C%8B%E5%88%B0%E4%BD%A0%E8%AF%B7%E8%81%94%E7%B3%BB%E6%88%91%E5%8A%A0"><span class="toc-number">4.</span> <span class="toc-text">
@@ -429,4 +429,26 @@ if (Array.isArray(assistSearchList)) {
       extSearch(name);
     }, false);
   });
-}</script><link href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" rel="stylesheet" type="text/css"><link href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/copy-tex.css" rel="stylesheet" type="text/css"><script src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/copy-tex.min.js"></script><script src="https://cdn.jsdelivr.net/gh/sukkaw/busuanzi@latest/bsz.pure.mini.js" async></script><script src="/js/utils.js?v=2.6.2"></script><script src="/js/stun-boot.js?v=2.6.2"></script><script src="/js/scroll.js?v=2.6.2"></script><script src="/js/header.js?v=2.6.2"></script><script src="/js/sidebar.js?v=2.6.2"></script><script type="application/json" src="/search.xml"></script></body></html>
+}</script><link href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" rel="stylesheet" type="text/css"><link href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/copy-tex.css" rel="stylesheet" type="text/css"><script src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/copy-tex.min.js"></script><script src="https://cdn.jsdelivr.net/gh/sukkaw/busuanzi@latest/bsz.pure.mini.js" async></script><script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/js-md5@latest/src/md5.min.js"></script><script>function loadGitalk () {
+  if (!document.getElementById('gitalk-container')) {
+    return;
+  }
+
+  var gitalk = new Gitalk({
+    id: md5(window.location.pathname.slice(1)),
+    clientID: '9ff99dad5f63f968ff89',
+    clientSecret: 'a78075e602518c2df48827e684fd5c38e1b0e472',
+    repo: 'cdcq.github.io',
+    owner: 'cdcq',
+    admin: ['cdcq'],
+    distractionFreeMode: 'false',
+    language: 'en'
+  });
+  gitalk.render('gitalk-container');
+}
+
+if (false) {
+  loadGitalk();
+} else {
+  window.addEventListener('DOMContentLoaded', loadGitalk, false);
+}</script><script src="/js/utils.js?v=2.6.2"></script><script src="/js/stun-boot.js?v=2.6.2"></script><script src="/js/scroll.js?v=2.6.2"></script><script src="/js/header.js?v=2.6.2"></script><script src="/js/sidebar.js?v=2.6.2"></script><script type="application/json" src="/search.xml"></script></body></html>
