@@ -8,8 +8,8 @@
 <meta property="article:published_time" content="2021-04-10T14:47:05.000Z">
 <meta property="article:modified_time" content="2021-04-11T03:03:40.999Z">
 <meta property="article:author" content="cdcq">
-<meta property="article:tag" content="总结和集合">
 <meta property="article:tag" content="ACM">
+<meta property="article:tag" content="总结和集合">
 <meta name="twitter:card" content="summary"><title>错误集合 | cdcq</title><link ref="canonical" href="http://cdcq.github.io/2021/04/10/%E9%94%99%E8%AF%AF%E9%9B%86%E5%90%88/"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.12.1/css/all.min.css" type="text/css"><link rel="stylesheet" href="/css/index.css?v=2.6.2"><script>var Stun = window.Stun || {};
 var CONFIG = {
   root: '/',
@@ -36,11 +36,13 @@ var CONFIG = {
 
 window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 5.4.0"></head><body><div class="container" id="container"><header class="header" id="header"><div class="header-inner header-inner--height header-inner--bgcolor"><nav class="header-nav header-nav--sticky"><div class="header-nav-inner"><div class="header-nav-menubtn"><i class="fas fa-bars"></i></div><div class="header-nav-menu"><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/"><span class="header-nav-menu-item__icon"><i class="fas fa-home"></i></span><span class="header-nav-menu-item__text">Home</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/archives/"><span class="header-nav-menu-item__icon"><i class="fas fa-folder-open"></i></span><span class="header-nav-menu-item__text">Archives</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/categories/"><span class="header-nav-menu-item__icon"><i class="fas fa-layer-group"></i></span><span class="header-nav-menu-item__text">Categories</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/tags/"><span class="header-nav-menu-item__icon"><i class="fas fa-tags"></i></span><span class="header-nav-menu-item__text">Tags</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/friends/"><span class="header-nav-menu-item__icon"><i class="fas fa-user-plus"></i></span><span class="header-nav-menu-item__text">Friends</span></a></div></div><div class="header-nav-search"><span class="header-nav-search__icon"><i class="fas fa-search"></i></span><span class="header-nav-search__text">Search</span></div><div class="header-nav-mode"><div class="mode"><div class="mode-track"><span class="mode-track-moon"></span><span class="mode-track-sun"></span></div><div class="mode-thumb"></div></div></div></div></nav></div></header><main class="main" id="main"><div class="main-inner"><div class="content-wrap" id="content-wrap"><div class="content" id="content"><!-- Just used to judge whether it is an article page--><div id="is-post"></div><div class="post"><header class="post-header"><h1 class="post-title">错误集合</h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">Created</span><span class="post-meta-item__value">2021-04-10</span></span><span class="post-meta-item post-meta-item--updatetime"><span class="post-meta-item__icon"><i class="far fa-calendar-check"></i></span><span class="post-meta-item__info">Updated</span><span class="post-meta-item__value">2021-04-11</span></span></div></header><div class="post-body"><p>线段树四倍</p>
 <p>马拉车开两倍！（需要插入通配符）</p>
-<p>有时候随手写个暴力很快，不用对拍，就在原代码里写，然后把输出比较，这样有时会让效率提高很多 </p>
+<p>有时候随手写个暴力很快，不用对拍，就在原代码里写，然后把输出比较，这样有时会让效率提高很多</p>
 <ul>
-<li><p>同下条，如果可能的话尽量测测答案为负数的数据</p>
+<li>
+<p>同下条，如果可能的话尽量测测答案为负数的数据</p>
 </li>
-<li><p>注意数组初值不一定是 0 ，常见于要取 max 的 ans 数组或 ans 变量</p>
+<li>
+<p>注意数组初值不一定是 0 ，常见于要取 max 的 ans 数组或 ans 变量</p>
 </li>
 </ul>
 <p>如果真实答案是负数，那给变量赋 0 初值就死了</p>
@@ -48,11 +50,9 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 5.4.0"></he
 <li>写封装的时候一定注意了，一般的写法不会用 oop（数组模拟），那么下面这种写法就很笨比</li>
 </ul>
 <figure class="highlight c++"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">cpn</span><span class="params">(cmnd x,cmnd y)</span></span>&#123; x.l=y.l; x.r=y.r; x.v=y.v;&#125;</span><br></pre></td></tr></table></div></figure>
-
 <p>这种写法只对形参进行了修改！影响不到外边</p>
 <p>需要用索引找到真数据的位置改</p>
 <figure class="highlight c++"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">cpn</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">nds[x].l=nds[y].l; nds[x].r=nds[y].r; nds[x].v=nds[y].v;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></div></figure>
-
 <ul>
 <li>如果你企图用这种方法：<code>printf(&quot;%d.%d&quot;,ans/100,ans%100)</code>来以小数形式输出百分数，那就要自闭啦</li>
 </ul>
@@ -74,7 +74,7 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 5.4.0"></he
 <li>一个 dfs 时复杂度分析的错误</li>
 </ul>
 <p>我枚举 n^2 条边，对于每条边都花 O(n) 检查是不是树边，如果这条边是树边（ n - 1 条），那么就枚举选或不选并搜下一层</p>
-<p>这样其实并不是 2^n*n 的复杂度，因为 n^2 的枚举和 2^n 的枚举是相互交织的，n^2 并不能被 2^n 覆盖掉，总复杂度差不多还是 2^n*n^3 量级</p>
+<p>这样其实并不是 2^n*n 的复杂度，因为 n^2 的枚举和 2^n 的枚举是相互交织的，n^2 并不能被 2^n 覆盖掉，总复杂度差不多还是 2<sup>n*n</sup>3 量级</p>
 <p>所以还是别偷懒用 O(n) 检查，先用并查集预处理出树边再搜吧。。</p>
 <ul>
 <li>当通过返回 oo 来控制二分中贪心的无解的时候</li>
@@ -98,9 +98,11 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 5.4.0"></he
 <p>统计的不是 1 到 n ，而是 0 到 id(n, m)（或者别的范围）</p>
 <p>id 函数易错点，只要出现 id 函数必须列入常规项检查</p>
 <ul>
-<li><p>多维 id 函数解压易错点：如果 id = x*m*4 + y*4 + z ，那么 y = id/4%m 而不是 id%m/4 ，注意顺序</p>
+<li>
+<p>多维 id 函数解压易错点：如果 id = x*m*4 + y*4 + z ，那么 y = id/4%m 而不是 id%m/4 ，注意顺序</p>
 </li>
-<li><p>使用 id 函数压缩状态的时候一定注意最小的 id 是不是 0 ，以及会不会造成影响！！！</p>
+<li>
+<p>使用 id 函数压缩状态的时候一定注意最小的 id 是不是 0 ，以及会不会造成影响！！！</p>
 </li>
 </ul>
 <p>例如 last[t] != 0 这个判断，就可能在 id 为 0 的状态前停下，而不是一条链的开始停下</p>
@@ -114,9 +116,11 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 5.4.0"></he
 <p>不是！</p>
 <p>当 a = 1 时，如果某个点第二次被选，它对答案的贡献是 0 而不是至少是 1</p>
 <ul>
-<li><p>如果数据不是特别大，不妨先写一个简单的启发式函数，TLE 了再尝试优化，不要一上来就写很复杂的启发式函数，导致出错就得不偿失了</p>
+<li>
+<p>如果数据不是特别大，不妨先写一个简单的启发式函数，TLE 了再尝试优化，不要一上来就写很复杂的启发式函数，导致出错就得不偿失了</p>
 </li>
-<li><p>读入字符串时字符串的数组一定不要开成刚好的大小！！！</p>
+<li>
+<p>读入字符串时字符串的数组一定不要开成刚好的大小！！！</p>
 </li>
 </ul>
 <p>因为 scanf 读入后会添一个 \0 ，如果数组大小刚好就越界了。。。</p>
@@ -130,7 +134,6 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 5.4.0"></he
 </ul>
 <p>注意如果要同时维护区间和，区间最大值的时候（边权），最后 x 和 y 往 lca 合并的时候，由于二者是从同深度共同向上，因此两人的（边的）值都要考虑到</p>
 <figure class="highlight c++"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(x==y)  <span class="keyword">return</span> mx;</span><br><span class="line"></span><br><span class="line"><span class="keyword">else</span> <span class="keyword">return</span> <span class="built_in">max</span>(mx,<span class="built_in">max</span>(mst[y][<span class="number">0</span>],mst[x][<span class="number">0</span>]));</span><br></pre></td></tr></table></div></figure>
-
 <ul>
 <li>计算几何检查点：跟 eps 比的东西有没有 abs</li>
 </ul>
@@ -151,60 +154,84 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 5.4.0"></he
 <li>一种错误的 DP 写法：</li>
 </ul>
 <figure class="highlight c++"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//f[x][0]=max(f[x][0],f[x][0]+f[e[i].y][1]);</span></span><br><span class="line"><span class="comment">//f[x][0]=max(f[x][0],f[x][0]+f[e[i].y][0]);</span></span><br><span class="line"><span class="comment">//注意不能这么写，会重复增加答案</span></span><br><span class="line">f[x][<span class="number">0</span>]=<span class="built_in">max</span>(f[x][<span class="number">0</span>],f[x][<span class="number">0</span>]+<span class="built_in">max</span>(f[e[i].y][<span class="number">1</span>],f[e[i].y][<span class="number">0</span>]));</span><br></pre></td></tr></table></div></figure>
-
 <ul>
-<li><p>dfs 回溯的时候注意检查完全，不要光盯着循环里看，函数开头 dfn 类似的可能也要回溯</p>
+<li>
+<p>dfs 回溯的时候注意检查完全，不要光盯着循环里看，函数开头 dfn 类似的可能也要回溯</p>
 </li>
-<li><p>给你一个区间的左端点和长度，范围 1e9 ，那么坐标的范围是 2e9 而不是 1e9 ，因为 1e9 + 1e9 = 2e9</p>
+<li>
+<p>给你一个区间的左端点和长度，范围 1e9 ，那么坐标的范围是 2e9 而不是 1e9 ，因为 1e9 + 1e9 = 2e9</p>
 </li>
-<li><p>要求你统计字符串中出现的字符中出现的次数并升序输出，注意没出现的字符可是不输出的哦。。。</p>
+<li>
+<p>要求你统计字符串中出现的字符中出现的次数并升序输出，注意没出现的字符可是不输出的哦。。。</p>
 </li>
-<li><p>10 点 40 的时候时针不在 10 上！涉及到钟表的几何问题可能掉坑</p>
+<li>
+<p>10 点 40 的时候时针不在 10 上！涉及到钟表的几何问题可能掉坑</p>
 </li>
-<li><p>如果把 2 位小数转整数，(long long)(b * 100) 不可取，b = 0.57 时得到 0.56 ，应该 + eps</p>
+<li>
+<p>如果把 2 位小数转整数，(long long)(b * 100) 不可取，b = 0.57 时得到 0.56 ，应该 + eps</p>
 </li>
-<li><p>double 的有效位数大概到 16 位，一个 1e15 的整数乘一个两位小数，再转成 longlong 就可能丢精度了，应该给小数乘 100 再除回去</p>
+<li>
+<p>double 的有效位数大概到 16 位，一个 1e15 的整数乘一个两位小数，再转成 longlong 就可能丢精度了，应该给小数乘 100 再除回去</p>
 </li>
-<li><p>double 强转 int 的时候注意可能要加括号，例如 (int)a*b ，如果 a 是整数 b 是浮点数，而想让 a*b 变成浮点数就傻了，应该 (int)(a*b)</p>
+<li>
+<p>double 强转 int 的时候注意可能要加括号，例如 (int)a*b ，如果 a 是整数 b 是浮点数，而想让 a*b 变成浮点数就傻了，应该 (int)(a*b)</p>
 </li>
-<li><p>如果要输出整数部分，注意算清数据范围，有时候不能用 (int)a 而是 (long long)a</p>
+<li>
+<p>如果要输出整数部分，注意算清数据范围，有时候不能用 (int)a 而是 (long long)a</p>
 </li>
-<li><p>两个值为 1e10 的 long long 相乘结果大于 0</p>
+<li>
+<p>两个值为 1e10 的 long long 相乘结果大于 0</p>
 </li>
-<li><p>用 multiset 的时候，注意 erase 是删除所有相等元素，并返回删除元素的个数</p>
+<li>
+<p>用 multiset 的时候，注意 erase 是删除所有相等元素，并返回删除元素的个数</p>
 </li>
-<li><p>注意别把 2e5 的数组开成 1e5</p>
+<li>
+<p>注意别把 2e5 的数组开成 1e5</p>
 </li>
-<li><p>鸡兔同笼问题中，有 a 个头，b 只脚，判断数据是否可能的条件不是 2a &lt;= b &lt;= 4b，而是 b%2 == 0 &amp;&amp; 2a &lt;= b &lt;= 4b！</p>
+<li>
+<p>鸡兔同笼问题中，有 a 个头，b 只脚，判断数据是否可能的条件不是 2a &lt;= b &lt;= 4b，而是 b%2 == 0 &amp;&amp; 2a &lt;= b &lt;= 4b！</p>
 </li>
-<li><p>强连通分量缩点 + 拓扑排序千万不能偷懒不缩点！！</p>
+<li>
+<p>强连通分量缩点 + 拓扑排序千万不能偷懒不缩点！！</p>
 </li>
 </ul>
 <p>不缩点而用标号代替的后果不仅是 WA（拓扑 DP 的最优值有滞后性），还会 RE（不缩点是假 dag ，还是有环的）</p>
 <ul>
-<li><p>用余弦定理时注意判断是否构成三角型，3 中情况都必须判断到，很容易漏</p>
+<li>
+<p>用余弦定理时注意判断是否构成三角型，3 中情况都必须判断到，很容易漏</p>
 </li>
-<li><p>直角坐标转极坐标的时候注意 α 不是 arccos(Δx/l) ，arccos 的范围是 [0, pi] ，还需要判定 Δy</p>
+<li>
+<p>直角坐标转极坐标的时候注意 α 不是 arccos(Δx/l) ，arccos 的范围是 [0, pi] ，还需要判定 Δy</p>
 </li>
-<li><p>长度为 0 的序列错位排序方案数是 1 不是 0</p>
+<li>
+<p>长度为 0 的序列错位排序方案数是 1 不是 0</p>
 </li>
-<li><p>如果对 dp 的 f 数组做前缀和，注意 f 的初始状态如果不为 0 ，那么前缀和中，对应一层的初值都不为 0</p>
+<li>
+<p>如果对 dp 的 f 数组做前缀和，注意 f 的初始状态如果不为 0 ，那么前缀和中，对应一层的初值都不为 0</p>
 </li>
-<li><p>有些 dp 使用滚动数组可以直接赋值，无需清空数组，但是注意有一些赋值不到的地方（比如 f[i][0] ）可能需要清空</p>
+<li>
+<p>有些 dp 使用滚动数组可以直接赋值，无需清空数组，但是注意有一些赋值不到的地方（比如 f[i][0] ）可能需要清空</p>
 </li>
-<li><p>出现灵异错误时可以注意一下局部变量是不是没初值，尽管这个错误在初学者里很常见，但熟练者一旦出现实际更为棘手</p>
+<li>
+<p>出现灵异错误时可以注意一下局部变量是不是没初值，尽管这个错误在初学者里很常见，但熟练者一旦出现实际更为棘手</p>
 </li>
-<li><p>线段树区间赋值注意 delta 的空值是否能为 0 ，因为区间赋值很多时候都存在把区间赋值为 0 的情况，这时 delta 空值不能是 0</p>
+<li>
+<p>线段树区间赋值注意 delta 的空值是否能为 0 ，因为区间赋值很多时候都存在把区间赋值为 0 的情况，这时 delta 空值不能是 0</p>
 </li>
-<li><p>检查数组大小时要注意某些值的范围可能变化，例如缩点 + 背包，那么包的容量可能就会增大</p>
+<li>
+<p>检查数组大小时要注意某些值的范围可能变化，例如缩点 + 背包，那么包的容量可能就会增大</p>
 </li>
-<li><p>SPFA（包括费用流）队列长度应该比点数多，因为可能重复进队</p>
+<li>
+<p>SPFA（包括费用流）队列长度应该比点数多，因为可能重复进队</p>
 </li>
-<li><p>用字符数组的时候不要把下标为 0 的当做长度，char 可以装数字但是只能装很小的数</p>
+<li>
+<p>用字符数组的时候不要把下标为 0 的当做长度，char 可以装数字但是只能装很小的数</p>
 </li>
-<li><p>浮点数比较相等的时候，注意是 abs(a - b) &lt; eps，而不是 a - b &lt; eps</p>
+<li>
+<p>浮点数比较相等的时候，注意是 abs(a - b) &lt; eps，而不是 a - b &lt; eps</p>
 </li>
-<li><p>有时候 sort 会巨慢，如果次数比较多就很难受</p>
+<li>
+<p>有时候 sort 会巨慢，如果次数比较多就很难受</p>
 </li>
 </ul>
 <p>这时如果结构体排序，可以在比较函数前加 ‘&amp;’ ，即参数取地址，防止每次函数调用都把结构体复制一遍，可以跑得飞快</p>
@@ -216,7 +243,7 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 5.4.0"></he
 <ul>
 <li>用 printf 四舍五入时需要 + eps，防止丢精度</li>
 </ul>
-</div><footer class="post-footer"><div class="post-ending ending"><div class="ending__text">------ END ------</div></div><div class="post-copyright copyright"><div class="copyright-author"><span class="copyright-author__name">Author: </span><span class="copyright-author__value"><a href="http://cdcq.github.io">cdcq</a></span></div><div class="copyright-link"><span class="copyright-link__name">Link: </span><span class="copyright-link__value"><a href="http://cdcq.github.io/2021/04/10/%E9%94%99%E8%AF%AF%E9%9B%86%E5%90%88/">http://cdcq.github.io/2021/04/10/%E9%94%99%E8%AF%AF%E9%9B%86%E5%90%88/</a></span></div><div class="copyright-notice"><span class="copyright-notice__name">Copyright: </span><span class="copyright-notice__value">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" rel="external nofollow" target="_blank">BY-NC-SA</a> unless stating additionally</span></div></div><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://cdcq.github.io/tags/%E6%80%BB%E7%BB%93%E5%92%8C%E9%9B%86%E5%90%88/">总结和集合</a></span><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://cdcq.github.io/tags/ACM/">ACM</a></span></div><nav class="post-paginator paginator"><div class="paginator-prev"><a class="paginator-prev__link" href="/2021/04/10/%E6%A8%A1%E6%9D%BF%E9%9B%86%E5%90%88/"><span class="paginator-prev__icon"><i class="fas fa-angle-left"></i></span><span class="paginator-prev__text">模板集合</span></a></div><div class="paginator-next"><a class="paginator-next__link" href="/2021/04/10/%E5%85%B3%E4%BA%8E%E6%88%91/"><span class="paginator-prev__text">关于我</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div><div class="comments" id="comments"><div id="valine-container"></div></div></div><div class="sidebar-wrap" id="sidebar-wrap"><aside class="sidebar" id="sidebar"><div class="sidebar-nav"><span class="sidebar-nav-toc current">Catalog</span><span class="sidebar-nav-ov">Overview</span></div><section class="sidebar-toc"></section><!-- ov = overview--><section class="sidebar-ov hide"><div class="sidebar-ov-author"><div class="sidebar-ov-author__avatar"><img class="sidebar-ov-author__avatar_img" src="/images/cdcq.png" alt="avatar"></div><p class="sidebar-ov-author__text">宠辱不惊，闲看庭前花开花落；去留无意，漫随天外云卷云舒。</p></div><div class="sidebar-ov-social"><a class="sidebar-ov-social-item" href="https://github.com/cdcq" target="_blank" rel="noopener"><span class="sidebar-ov-social-item__icon"><i class="fab fa-github"></i></span><span class="sidebar-ov-social-item__text">github</span></a></div><div class="sidebar-ov-state"><a class="sidebar-ov-state-item sidebar-ov-state-item--posts" href="/archives/"><div class="sidebar-ov-state-item__count">5</div><div class="sidebar-ov-state-item__name">Archives</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--categories" href="/categories/"><div class="sidebar-ov-state-item__count">2</div><div class="sidebar-ov-state-item__name">Categories</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--tags" href="/tags/"><div class="sidebar-ov-state-item__count">4</div><div class="sidebar-ov-state-item__name">Tags</div></a></div></section><div class="sidebar-reading"><div class="sidebar-reading-info"><span class="sidebar-reading-info__text">You have read </span><span class="sidebar-reading-info__num">0</span><span class="sidebar-reading-info__perc">%</span></div><div class="sidebar-reading-line"></div></div></aside></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2021</span><span class="footer__icon"><i class="fab fa-github"></i></span><span>cdcq</span></div><div><span>Powered by <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a></span><span> v5.4.0</span><span class="footer__devider">|</span><span>Theme - <a href="https://github.com/liuyib/hexo-theme-stun/" title="Stun" target="_blank" rel="noopener">Stun</a></span><span> v2.6.2</span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div><div class="back2top" id="back2top"><span class="back2top__icon"><i class="fas fa-rocket"></i></span></div></div><div class="search-mask"></div><div class="search-popup"><span class="search-close"></span><div class="search-input"><input placeholder="Search for Posts (Support multiple keywords)"></div><div class="search-results"></div></div><script src="https://cdn.jsdelivr.net/npm/jquery@v3.4.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/npm/ribbon.js@latest/dist/ribbon.min.js" size="120" alpha="0.6" zIndex="-1"></script><script src="https://cdn.jsdelivr.net/npm/lazyload@2.0.0-rc.2/lazyload.min.js"></script><script>function initSearch() {
+</div><footer class="post-footer"><div class="post-ending ending"><div class="ending__text">------ END ------</div></div><div class="post-copyright copyright"><div class="copyright-author"><span class="copyright-author__name">Author: </span><span class="copyright-author__value"><a href="http://cdcq.github.io">cdcq</a></span></div><div class="copyright-link"><span class="copyright-link__name">Link: </span><span class="copyright-link__value"><a href="http://cdcq.github.io/2021/04/10/%E9%94%99%E8%AF%AF%E9%9B%86%E5%90%88/">http://cdcq.github.io/2021/04/10/%E9%94%99%E8%AF%AF%E9%9B%86%E5%90%88/</a></span></div><div class="copyright-notice"><span class="copyright-notice__name">Copyright: </span><span class="copyright-notice__value">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" rel="external nofollow" target="_blank">BY-NC-SA</a> unless stating additionally</span></div></div><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://cdcq.github.io/tags/ACM/">ACM</a></span><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://cdcq.github.io/tags/%E6%80%BB%E7%BB%93%E5%92%8C%E9%9B%86%E5%90%88/">总结和集合</a></span></div><nav class="post-paginator paginator"><div class="paginator-prev"><a class="paginator-prev__link" href="/2021/04/10/%E6%A8%A1%E6%9D%BF%E9%9B%86%E5%90%88/"><span class="paginator-prev__icon"><i class="fas fa-angle-left"></i></span><span class="paginator-prev__text">模板集合</span></a></div><div class="paginator-next"><a class="paginator-next__link" href="/2021/04/10/%E5%85%B3%E4%BA%8E%E6%88%91/"><span class="paginator-prev__text">关于我</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div><div class="comments" id="comments"><div id="valine-container"></div></div></div><div class="sidebar-wrap" id="sidebar-wrap"><aside class="sidebar" id="sidebar"><div class="sidebar-nav"><span class="sidebar-nav-toc current">Catalog</span><span class="sidebar-nav-ov">Overview</span></div><section class="sidebar-toc"></section><!-- ov = overview--><section class="sidebar-ov hide"><div class="sidebar-ov-author"><div class="sidebar-ov-author__avatar"><img class="sidebar-ov-author__avatar_img" src="/images/cdcq.png" alt="avatar"></div><p class="sidebar-ov-author__text">宠辱不惊，闲看庭前花开花落；去留无意，漫随天外云卷云舒。</p></div><div class="sidebar-ov-social"><a class="sidebar-ov-social-item" href="https://github.com/cdcq" target="_blank" rel="noopener"><span class="sidebar-ov-social-item__icon"><i class="fab fa-github"></i></span><span class="sidebar-ov-social-item__text">github</span></a></div><div class="sidebar-ov-state"><a class="sidebar-ov-state-item sidebar-ov-state-item--posts" href="/archives/"><div class="sidebar-ov-state-item__count">6</div><div class="sidebar-ov-state-item__name">Archives</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--categories" href="/categories/"><div class="sidebar-ov-state-item__count">4</div><div class="sidebar-ov-state-item__name">Categories</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--tags" href="/tags/"><div class="sidebar-ov-state-item__count">5</div><div class="sidebar-ov-state-item__name">Tags</div></a></div></section><div class="sidebar-reading"><div class="sidebar-reading-info"><span class="sidebar-reading-info__text">You have read </span><span class="sidebar-reading-info__num">0</span><span class="sidebar-reading-info__perc">%</span></div><div class="sidebar-reading-line"></div></div></aside></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2021</span><span class="footer__icon"><i class="fab fa-github"></i></span><span>cdcq</span></div><div><span>Powered by <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a></span><span> v5.4.0</span><span class="footer__devider">|</span><span>Theme - <a href="https://github.com/liuyib/hexo-theme-stun/" title="Stun" target="_blank" rel="noopener">Stun</a></span><span> v2.6.2</span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div><div class="back2top" id="back2top"><span class="back2top__icon"><i class="fas fa-rocket"></i></span></div></div><div class="search-mask"></div><div class="search-popup"><span class="search-close"></span><div class="search-input"><input placeholder="Search for Posts (Support multiple keywords)"></div><div class="search-results"></div></div><script src="https://cdn.jsdelivr.net/npm/jquery@v3.4.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/npm/ribbon.js@latest/dist/ribbon.min.js" size="120" alpha="0.6" zIndex="-1"></script><script src="https://cdn.jsdelivr.net/npm/lazyload@2.0.0-rc.2/lazyload.min.js"></script><script>function initSearch() {
   var isXML = true;
   var search_path = 'search.xml';
 
@@ -489,7 +516,7 @@ if (Array.isArray(assistSearchList)) {
       extSearch(name);
     }, false);
   });
-}</script><script src="https://cdn.jsdelivr.net/npm/leancloud-storage@latest/dist/av-min.js"></script><script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script><script>function loadValine () {
+}</script><link href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" rel="stylesheet" type="text/css"><link href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/copy-tex.css" rel="stylesheet" type="text/css"><script src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/copy-tex.min.js"></script><script src="https://cdn.jsdelivr.net/npm/leancloud-storage@latest/dist/av-min.js"></script><script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script><script>function loadValine () {
   var GUEST_INFO = ['nick', 'mail', 'link'];
   var guest_info = 'nick,mail,link';
 
