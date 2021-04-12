@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>CTF常用工具集合</title>
+      <link href="2021/04/12/20210412a/"/>
+      <url>2021/04/12/20210412a/</url>
+      
+        <content type="html"><![CDATA[        <h1 id="web"   >          <a href="#web" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#web"></a> Web</h1>      <ul><li>sqlmap ：sql 注入</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结与集合 </category>
+          
+          <category> CTF </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> CTF </tag>
+            
+            <tag> 总结与集合 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>数论集合</title>
       <link href="2021/04/11/20210411d/"/>
       <url>2021/04/11/20210411d/</url>
