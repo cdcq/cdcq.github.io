@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>Python文档学习笔记</title>
+      <link href="2021/04/14/20210414a/"/>
+      <url>2021/04/14/20210414a/</url>
+      
+        <content type="html"><![CDATA[<p>顺序为我看的顺序，一号标题为知识点出现的文档，二号标题为出现的章节。</p>        <h1 id="python-教程"   >          <a href="#python-教程" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#python-教程"></a> Python 教程</h1>              <h2 id="3-python-速览"   >          <a href="#3-python-速览" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#3-python-速览"></a> 3. Python 速览¶</h2>      <ul><li><p>如果不希望前置 \ 的字符转义成特殊字符，可以使用 原始字符串，在引号前添加 r 即可。</p></li><li><p>字符串字面值可以实现跨行连续输入。实现方式是用三引号：&quot;&quot;&quot;…&quot;&quot;&quot; 或 ‘’’…’’’，字符串行尾会自动加上回车换行，如果不需要回车换行，在行尾添加 \ 即可。示例如下：</p></li></ul><figure class="highlight python"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&quot;&quot;&quot;\</span></span><br><span class="line"><span class="string">Usage: thingy [OPTIONS]</span></span><br><span class="line"><span class="string">     -h                        Display this usage message</span></span><br><span class="line"><span class="string">     -H hostname               Hostname to connect to</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span>)</span><br></pre></td></tr></table></div></figure><p>输出如下（注意，第一行没有换行）：</p><figure class="highlight python"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Usage: thingy [OPTIONS]</span><br><span class="line">     -h                        Display this usage message</span><br><span class="line">     -H hostname               Hostname to connect to</span><br></pre></td></tr></table></div></figure><ul><li>相邻的两个或多个 字符串字面值 （引号标注的字符）会自动合并：</li></ul><figure class="highlight python"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">&#x27;Py&#x27;</span> <span class="string">&#x27;thon&#x27;</span></span><br><span class="line"><span class="string">&#x27;Python&#x27;</span></span><br></pre></td></tr></table></div></figure><p>拆分长字符串时，这个功能特别实用：</p><figure class="highlight python"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>text = (<span class="string">&#x27;Put several strings within parentheses &#x27;</span></span><br><span class="line"><span class="meta">... </span>        <span class="string">&#x27;to have them joined together.&#x27;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>text</span><br><span class="line"><span class="string">&#x27;Put several strings within parentheses to have them joined together.&#x27;</span></span><br></pre></td></tr></table></div></figure><p>这项功能只能用于两个字面值，不能用于变量或表达式：</p><figure class="highlight python"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>prefix <span class="string">&#x27;thon&#x27;</span>  <span class="comment"># can&#x27;t concatenate a variable and a string literal</span></span><br><span class="line">  File <span class="string">&quot;&lt;stdin&gt;&quot;</span>, line <span class="number">1</span></span><br><span class="line">    prefix <span class="string">&#x27;thon&#x27;</span></span><br><span class="line">                ^</span><br><span class="line">SyntaxError: invalid syntax</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>(<span class="string">&#x27;un&#x27;</span> * <span class="number">3</span>) <span class="string">&#x27;ium&#x27;</span></span><br><span class="line">  File <span class="string">&quot;&lt;stdin&gt;&quot;</span>, line <span class="number">1</span></span><br><span class="line">    (<span class="string">&#x27;un&#x27;</span> * <span class="number">3</span>) <span class="string">&#x27;ium&#x27;</span></span><br><span class="line">                   ^</span><br><span class="line">SyntaxError: invalid syntax</span><br></pre></td></tr></table></div></figure><ul><li>索引还支持负数，用负数索引时，从右边开始计数。</li></ul><p>注意，-0 和 0 一样，因此，负数索引从 -1 开始。</p><ul><li><p>索引越界会报错，但是，切片会自动处理越界索引。</p></li><li><p>切片操作返回包含请求元素的新列表。以下切片操作会返回列表的浅拷贝：</p></li></ul><figure class="highlight python"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>squares[:]</span><br><span class="line">[<span class="number">1</span>, <span class="number">4</span>, <span class="number">9</span>, <span class="number">16</span>, <span class="number">25</span>]</span><br></pre></td></tr></table></div></figure><p>浅层与深层复制的区别仅与复合对象（即包含列表或类的实例等其他对象的对象）相关：</p><p>浅层复制构造一个新的复合对象，然后（在尽可能的范围内）将原始对象中找到的对象的引用插入其中。</p><p>深层复制构造一个新的复合对象，然后，递归地将在原始对象里找到的对象的副本插入其中。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 开发 </category>
+          
+          <category> python </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 开发 </tag>
+            
+            <tag> python </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>《白光》读书笔记</title>
       <link href="2021/04/13/20210413a/"/>
       <url>2021/04/13/20210413a/</url>
