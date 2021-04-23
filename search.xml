@@ -120,7 +120,7 @@
       <link href="2021/04/12/20210412a/"/>
       <url>2021/04/12/20210412a/</url>
       
-        <content type="html"><![CDATA[        <h1 id="web"   >          <a href="#web" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#web"></a> Web</h1>      <ul><li><p>sqlmap：sql 注入</p></li><li><p>nikto：漏洞扫描</p></li></ul>]]></content>
+        <content type="html"><![CDATA[        <h1 id="web"   >          <a href="#web" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#web"></a> Web</h1>      <ul><li><p>sqlmap：sql 注入</p></li><li><p>nikto：漏洞扫描</p></li></ul>        <h1 id="misc"   >          <a href="#misc" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#misc"></a> Misc</h1>      <ul><li>foremost：文件分离</li></ul><p>可以直接从pcap包分东西出来</p>]]></content>
       
       
       <categories>
