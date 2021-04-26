@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>强网杯2019 - 随便注</title>
+      <link href="2021/04/26/20210426a/"/>
+      <url>2021/04/26/20210426a/</url>
+      
+        <content type="html"><![CDATA[<p>这题靠我自己当然是做不出来的，看了 n 多边题解才学会，直接说做法。</p><p>首先简单测一下，可以发现外边是包了单引号的，而且 1’ or ‘1’='1 可以把表中所有数据都拉出来。</p><p>select 之类的指令被禁用了，但是可以使用堆叠注入。堆叠注入就是使用分号，在一条查询语句中塞入多个数据库指令。本题就使用堆叠注入。</p><p>show tables 查看所有表：</p><figure class="highlight plain"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1&#39;; show tables; #</span><br></pre></td></tr></table></div></figure><p>看到有 words 和 1919810931114514 两个表。</p><p>desc 查看表结构：</p><figure class="highlight plain"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1&#39;; desc words; #</span><br></pre></td></tr></table></div></figure><p>可以看到表有两个字段 id 和 data 。</p><p>推测出后端查询语句大概是 select id, data from words where id = 。</p><p>select 被禁用了，那如何跨表查询呢？</p><p>这里脑洞就来了 =。=</p><p>把 words 改成其他名字，把装 flag 的表改成 words ，然后再在当前表查询，就能查到 flag 。</p><p>这里如果只把 words 改跑，而没有把别的表改成 words ，那么数据库就会被注坏。因为查询语句是从 words 里查的，这个是写死的，所以如果没有把 words 的位置补上，查询语句就在一开始出错，后面就无法再进行操作了。</p><p>所以要同时改两次名：</p><figure class="highlight plain"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1&#39;; rename tables words to word; rename tables &#96;1919810931114514&#96; to words; #</span><br></pre></td></tr></table></div></figure><p>这样改两次名之后你会发现数据库还是被注坏了，提示 Unknown column ‘id’ in ‘where clause’ 。</p><p>这是因为另一个表的没有名为 id 的字段，如果不改列名同样会让查询语句出错。</p><p>首先查另一个表的表结构，得知字段是 flag ，然后修改列名：</p><figure class="highlight plain"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1&#39;; rename tables words to word; rename tables &#96;1919810931114514&#96; to words; alter table words change flag id varchar(100); #</span><br></pre></td></tr></table></div></figure><p>最后用 1’ or ‘1’='1 把当前表的所有值全拉出来就得到 flag 。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> CTF </category>
+          
+          <category> web </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> CTF </tag>
+            
+            <tag> web </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>网络流24题集合</title>
       <link href="2021/04/25/20210425a/"/>
       <url>2021/04/25/20210425a/</url>
