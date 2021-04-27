@@ -6,7 +6,7 @@
 <meta property="og:description" content="太空飞行计划的输入输出是人间之屑">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-04-25T15:30:39.000Z">
-<meta property="article:modified_time" content="2021-04-25T15:50:03.823Z">
+<meta property="article:modified_time" content="2021-04-27T14:08:59.982Z">
 <meta property="article:author" content="cdcq">
 <meta property="article:tag" content="总结与集合">
 <meta property="article:tag" content="ACM">
@@ -35,19 +35,34 @@ var CONFIG = {
   sourcePath: {"js":"js","css":"css","images":"images"},
 };
 
-window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 5.4.0"></head><body><div class="container" id="container"><header class="header" id="header"><div class="header-inner header-inner--height header-inner--bgcolor"><nav class="header-nav header-nav--sticky"><div class="header-nav-inner"><div class="header-nav-menubtn"><i class="fas fa-bars"></i></div><div class="header-nav-menu"><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/"><span class="header-nav-menu-item__icon"><i class="fas fa-home"></i></span><span class="header-nav-menu-item__text">Home</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/archives/"><span class="header-nav-menu-item__icon"><i class="fas fa-folder-open"></i></span><span class="header-nav-menu-item__text">Archives</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/categories/"><span class="header-nav-menu-item__icon"><i class="fas fa-layer-group"></i></span><span class="header-nav-menu-item__text">Categories</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/tags/"><span class="header-nav-menu-item__icon"><i class="fas fa-tags"></i></span><span class="header-nav-menu-item__text">Tags</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/friends/"><span class="header-nav-menu-item__icon"><i class="fas fa-user-plus"></i></span><span class="header-nav-menu-item__text">Friends</span></a></div></div><div class="header-nav-search"><span class="header-nav-search__icon"><i class="fas fa-search"></i></span><span class="header-nav-search__text">Search</span></div><div class="header-nav-mode"><div class="mode"><div class="mode-track"><span class="mode-track-moon"></span><span class="mode-track-sun"></span></div><div class="mode-thumb"></div></div></div></div></nav></div></header><main class="main" id="main"><div class="main-inner"><div class="content-wrap" id="content-wrap"><div class="content" id="content"><!-- Just used to judge whether it is an article page--><div id="is-post"></div><div class="post"><header class="post-header"><h1 class="post-title">网络流24题集合</h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">Created</span><span class="post-meta-item__value">2021-04-25</span></span><span class="post-meta-item post-meta-item--updatetime"><span class="post-meta-item__icon"><i class="far fa-calendar-check"></i></span><span class="post-meta-item__info">Updated</span><span class="post-meta-item__value">2021-04-25</span></span><span class="post-meta-item post-meta-item--visitors"><span class="post-meta-item__icon"><i class="fas fa-eye"></i></span><span class="post-meta-item__info">Visited</span><span class="post-meta-item__value" id="busuanzi_value_page_pv"></span></span></div></header><div class="post-body"><p>网络流 24 的题目还比较有意思，涵盖了许多常见套路，值得刷一边。只是有些题的输入输出实在是太屑了（恼）。</p>
+window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 5.4.0"></head><body><div class="container" id="container"><header class="header" id="header"><div class="header-inner header-inner--height header-inner--bgcolor"><nav class="header-nav header-nav--sticky"><div class="header-nav-inner"><div class="header-nav-menubtn"><i class="fas fa-bars"></i></div><div class="header-nav-menu"><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/"><span class="header-nav-menu-item__icon"><i class="fas fa-home"></i></span><span class="header-nav-menu-item__text">Home</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/archives/"><span class="header-nav-menu-item__icon"><i class="fas fa-folder-open"></i></span><span class="header-nav-menu-item__text">Archives</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/categories/"><span class="header-nav-menu-item__icon"><i class="fas fa-layer-group"></i></span><span class="header-nav-menu-item__text">Categories</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/tags/"><span class="header-nav-menu-item__icon"><i class="fas fa-tags"></i></span><span class="header-nav-menu-item__text">Tags</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/friends/"><span class="header-nav-menu-item__icon"><i class="fas fa-user-plus"></i></span><span class="header-nav-menu-item__text">Friends</span></a></div></div><div class="header-nav-search"><span class="header-nav-search__icon"><i class="fas fa-search"></i></span><span class="header-nav-search__text">Search</span></div><div class="header-nav-mode"><div class="mode"><div class="mode-track"><span class="mode-track-moon"></span><span class="mode-track-sun"></span></div><div class="mode-thumb"></div></div></div></div></nav></div></header><main class="main" id="main"><div class="main-inner"><div class="content-wrap" id="content-wrap"><div class="content" id="content"><!-- Just used to judge whether it is an article page--><div id="is-post"></div><div class="post"><header class="post-header"><h1 class="post-title">网络流24题集合</h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">Created</span><span class="post-meta-item__value">2021-04-25</span></span><span class="post-meta-item post-meta-item--updatetime"><span class="post-meta-item__icon"><i class="far fa-calendar-check"></i></span><span class="post-meta-item__info">Updated</span><span class="post-meta-item__value">2021-04-27</span></span><span class="post-meta-item post-meta-item--visitors"><span class="post-meta-item__icon"><i class="fas fa-eye"></i></span><span class="post-meta-item__info">Visited</span><span class="post-meta-item__value" id="busuanzi_value_page_pv"></span></span></div></header><div class="post-body"><p>网络流 24 的题目还比较有意思，涵盖了许多常见套路，值得刷一边。只是有些题的输入输出实在是太屑了（恼）。</p>
 
         <h1 id="搭配飞行员"   >
           <a href="#搭配飞行员" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#搭配飞行员"></a> 搭配飞行员</h1>
       
+<p>一架飞机要一个正驾驶和一个副驾驶，只有特定的正副驾驶组合才能飞，问最大起飞个数。</p>
+<hr />
+<p>十分基本的二分图匹配。</p>
 
         <h1 id="太空飞行计划"   >
           <a href="#太空飞行计划" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#太空飞行计划"></a> 太空飞行计划</h1>
       
+<p>有一堆仪器和一堆实验，每个实验要求实验室里有某些仪器才能做。买仪器要花钱，做实验能赚钱，问最多赚多少钱。要求输出方案。</p>
+<hr />
+<p>常见思路：把最大可选择转化为最小可不选择。</p>
+<p>建最小割模型，左边仪器价格边，割掉表示买仪器，右边实验收益边，割掉表示不做实验，中间无穷边。如果有一个实验不割表示做，而要求的某个仪器不割表示不买，中间的无穷边就导通，表示方案不合法。</p>
+<p>最后用实验总收益减去最小负收益得到答案。</p>
+<p>输出方案想不太清楚，题解说统计没有被割掉的实验边，就表示这些实验选做，看上去莫得问题但总感觉怪怪的。</p>
 
         <h1 id="最小路径覆盖"   >
           <a href="#最小路径覆盖" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#最小路径覆盖"></a> 最小路径覆盖</h1>
       
+<p>给一个 DAG ，让你用最少的路径条数覆盖所有点，路径之间不能交叉。</p>
+<hr />
+<p>似乎比较多问题可以转化到这个模型，需要熟悉。</p>
+<p>还是老套路，最小可选转化为最大可不选。这道题里就是最小路径数转化为最多可以连接的节点对数。</p>
+<p>所以左边所有点连 1 边，右边是另一组所有点，连 1 边，表示每个点最多出一次入一次。中间是有向图中的边，入点是左边，出点是右边，表示一个可连接点对。</p>
+<p>最后用总点数减去最多可连接点数就得到答案。因为每连接一对点就少一条链。</p>
 
         <h1 id="魔术球"   >
           <a href="#魔术球" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#魔术球"></a> 魔术球</h1>
