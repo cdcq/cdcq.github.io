@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>第五空间2019 决赛 - PWN5</title>
+      <link href="2021/05/04/20210504b/"/>
+      <url>2021/05/04/20210504b/</url>
+      
+        <content type="html"><![CDATA[<p>题目开了 canary 保护，不能栈溢出了。</p><p>漏洞在于题目把输入的字符串直接 printf 出来，这样就可以利用 printf 的格式化输出的漏洞。</p><p>（这也居然也能有漏洞囧）</p><p>printf 输出的时候，如果遇到了 % ，就会期望这后面跟着一个格式化字符串，并递增它的栈指针去找。如果字符串里的参数多于函数的参数，就会导致访问越界。</p><p>此外 printf 还有一个 %n 格式，可以把之前已打印的字符长度写到某个地址里，利用这个甚至可以进行任意地址读写。</p><p>利用格式化漏洞首先要找偏移量，即 printf 的栈指针增加到能访问到输出字符串的量。输出这样的字符 ‘AAAA %08x %08x %08x %08x %08x %08x %08x %08x %08x %08x %08x %08x’，然后在结果里找 41414141 ，就是 AAAA 。</p><p>在这道题中，程序会先输出第一个输入，再把第二个输入和一个随机数比较，如果一样就执行 shell 。可以利用格式化漏洞把随机数覆写。</p><p>首先找到偏移量是 10 个字节，然后就可以构造输出 p32(addr) + b’%10$n’ ，这里 10$ 是偏移 10 个字节（n 是写一个字节）。这样就会把 addr 地址上的值写为 4（因为 p32(addr) 是 4 个字符）。</p><p>然后再输入 4 就可以比对成功。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> CTF </category>
+          
+          <category> pwn </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> CTF </tag>
+            
+            <tag> pwn </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>ciscn_2019_c_1</title>
       <link href="2021/05/04/20210504a/"/>
       <url>2021/05/04/20210504a/</url>
@@ -211,7 +240,7 @@
       <link href="2021/04/12/20210412a/"/>
       <url>2021/04/12/20210412a/</url>
       
-        <content type="html"><![CDATA[        <h1 id="web"   >          <a href="#web" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#web"></a> Web</h1>          <div class="note-plugin danger">      <span class="note-plugin__icon note-plugin__icon--danger">              <i class="fas fa-minus-circle"></i>            </span>      <p><strong>Danger</strong><br />慎用测试工具，禁止非授权测试！</p>    </div>  <ul><li>sqlmap：sql 注入</li><li>nikto：漏洞扫描</li><li>burpsuite：集成平台，java 运行可跨平台</li></ul>        <h1 id="misc"   >          <a href="#misc" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#misc"></a> Misc</h1>      <ul><li><p>foremost：文件分离</p><p>可以直接从 pcap 包分东西出来</p></li><li><p>binwalk：文件分离</p></li><li><p>stegsolve：图像处理小工具</p></li></ul>        <h1 id="pwn"   >          <a href="#pwn" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#pwn"></a> PWN</h1>      <ul><li><p>peda：gdb 插件，动态调试利器</p></li><li><p>one_gadget：查找已知的 libc 中 exevce(&quot;/bin/sh&quot;) 语句的地址</p><p>one_gadget <span class="exturl"><a class="exturl__link"   href="http://libc-x.xx.so" >libc-x.xx.so</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span></p></li><li><p>readelf：查看 elf 信息（系统架构，libc 版本等）</p></li></ul>]]></content>
+        <content type="html"><![CDATA[        <h1 id="web"   >          <a href="#web" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#web"></a> Web</h1>          <div class="note-plugin danger">      <span class="note-plugin__icon note-plugin__icon--danger">              <i class="fas fa-minus-circle"></i>            </span>      <p><strong>Danger</strong><br />慎用测试工具，禁止非授权测试！</p>    </div>  <ul><li>sqlmap：sql 注入</li><li>nikto：漏洞扫描</li><li>burpsuite：集成平台，java 运行可跨平台</li></ul>        <h1 id="misc"   >          <a href="#misc" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#misc"></a> Misc</h1>      <ul><li><p>foremost：文件分离</p><p>可以直接从 pcap 包分东西出来</p></li><li><p>binwalk：文件分离</p></li><li><p>stegsolve：图像处理小工具</p></li></ul>        <h1 id="pwn"   >          <a href="#pwn" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#pwn"></a> PWN</h1>      <ul><li><p>peda：gdb 插件，动态调试利器</p></li><li><p>one_gadget：查找已知的 libc 中 exevce(&quot;/bin/sh&quot;) 语句的地址</p><p>one_gadget <span class="exturl"><a class="exturl__link"   href="http://libc-x.xx.so" >libc-x.xx.so</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span></p></li><li><p>readelf：查看 elf 信息（系统架构，libc 版本等）</p></li><li><p><span class="exturl"><a class="exturl__link"   href="https://defuse.ca/online-x86-assembler.htm#disassembly" >https://defuse.ca/online-x86-assembler.htm#disassembly</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span></p><p>在线 x86/x64 汇编和机器码互转</p></li></ul>]]></content>
       
       
       <categories>
