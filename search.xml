@@ -4,6 +4,43 @@
   
     
     <entry>
+      <title>MiniLCTF2021 - 抓猫猫</title>
+      <link href="2021/05/13/20210513a/"/>
+      <url>2021/05/13/20210513a/</url>
+      
+        <content type="html"><![CDATA[<p>没错这是我出的题（</p><p>但是也是搬的别人的 idea ，原来是 acm 题，出在 ctf 里有点算偏题 233</p><p>原题的题解：<span class="exturl"><a class="exturl__link"   href="https://www.cnblogs.com/cdcq/p/12303889.html" >https://www.cnblogs.com/cdcq/p/12303889.html</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span></p><p>但是这个题解的证明太罗嗦了，所以再写一次</p><p>题意：</p><p>两个人轮流抓猫。初始有 n 只猫，第一次最少抓 1 只，最多抓 n - 1 只。之后的每轮至少抓 1 只，至多不能超过上一次抓的数量。抓走最后一只猫的人胜利。电脑先抓且保证第一次抓不是最优解。</p><p>先上结论：n 是 2 的幂时后手必胜，否则先手必胜</p><p>证明：</p><p>考虑这个数的最低二进制位，即 lowbit ，例如 6 的 lowbit 是 2 ，12 的 lowbit 是 4</p><p>现在拿走 n 的 lowbit ，记为 b，讨论对方的做法，记拿的数为 a</p><p>① a = b</p><p>易证剩下的数 n - 2b 的 lowbit 还是 b ，下一步可以再拿 b</p><p>② a &lt; b</p><p>由于 b 是 2 的幂，所以小于 b 且大于 1 的数必由小于 b 的二进制位组成</p><p>易证剩下的数 n - a - b 的 lowbit 一定小于 b，所以下一步必定可以拿走更小的 lowbit</p><p>因此每次必可以拿走当前数的 lowbit ，直至当前数为 1 为止，此时数的 lowbit 为自身，拿走即胜利</p><p>需要注意的是，对方任何时候都不可能拿走剩下的所有数，因为 n - lowbit(n) &gt; lowbit(n)</p><p>而当初始数为 2 的幂的时候，没有 lowbit 可拿（最多拿 n - 1 ），此时拿任何数都会导致对方出现可拿的 lowbit ，因此必败</p><p>这道题的 3 个 hint 都是希望选手学习电脑的策略，从而找到必胜的规律</p><p>根据做题情况来看，大多数选手都是通过比较弱的结论来胜利，比如观察到奇数必胜，那么随便乱打，蹲一个奇数就可以了（虽然我尽可能地避免出现奇数，但是在必败态还是经常莫得选）</p><p>所以这题其实还有改进的空间，让人工智障的策略更具有迷惑性一些</p><p>不过 misc 题嘛，随便玩玩也是可以的，好玩就可以了</p><p>大家都认为这题作为 misc 签到题还是比较好玩的 hhh</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> ACM </category>
+          
+          <category> CTF </category>
+          
+          <category> misc </category>
+          
+          <category> 博弈 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> ACM </tag>
+            
+            <tag> CTF </tag>
+            
+            <tag> misc </tag>
+            
+            <tag> 博弈 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>第五空间2019 决赛 - PWN5</title>
       <link href="2021/05/04/20210504b/"/>
       <url>2021/05/04/20210504b/</url>
