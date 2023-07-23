@@ -1,0 +1,467 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="format-detection" content="telephone=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><link rel="icon" href="/images/cdcq.png?v=2.6.2" type="image/png" sizes="16x16"><link rel="icon" href="/images/cdcq.png?v=2.6.2" type="image/png" sizes="32x32"><meta name="description" content="ext4比ntfs简单多了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="EXT4结构略解——教你自己解析EXT4文件系统">
+<meta property="og:url" content="http://cdcq.github.io/2022/05/27/20220527a/index.html">
+<meta property="og:site_name" content="cdcq">
+<meta property="og:description" content="ext4比ntfs简单多了">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-27T07:10:22.000Z">
+<meta property="article:modified_time" content="2023-04-30T13:57:18.621Z">
+<meta property="article:author" content="cdcq">
+<meta property="article:tag" content="电子数据取证">
+<meta property="article:tag" content="教程">
+<meta name="twitter:card" content="summary"><title>EXT4结构略解——教你自己解析EXT4文件系统 | cdcq</title><link ref="canonical" href="http://cdcq.github.io/2022/05/27/20220527a/"><link rel="alternate" href="/atom.xml" type="application/atom+xml"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.12.1/css/all.min.css" type="text/css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.css" type="text/css"><link rel="stylesheet" href="/css/index.css?v=2.6.2"><script>var Stun = window.Stun || {};
+var CONFIG = {
+  root: '/',
+  algolia: undefined,
+  assistSearch: undefined,
+  fontIcon: {"prompt":{"success":"fas fa-check-circle","info":"fas fa-arrow-circle-right","warning":"fas fa-exclamation-circle","error":"fas fa-times-circle"},"copyBtn":"fas fa-copy"},
+  sidebar: {"offsetTop":"20px","tocMaxDepth":6},
+  header: {"enable":true,"showOnPost":false,"scrollDownIcon":true},
+  postWidget: {"endText":true},
+  nightMode: {"enable":true},
+  back2top: {"enable":true},
+  codeblock: {"style":"default","highlight":"light","wordWrap":true},
+  reward: false,
+  fancybox: false,
+  zoomImage: {"gapAside":"20px"},
+  galleryWaterfall: undefined,
+  lazyload: true,
+  pjax: undefined,
+  externalLink: {"icon":{"enable":true,"name":"fas fa-external-link-alt"}},
+  shortcuts: undefined,
+  prompt: {"copyButton":"复制","copySuccess":"复制成功","copyError":"复制失败"},
+  sourcePath: {"js":"js","css":"css","images":"images"},
+};
+
+window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 5.4.0"></head><body><div class="container" id="container"><header class="header" id="header"><div class="header-inner header-inner--height header-inner--bgcolor"><nav class="header-nav header-nav--sticky"><div class="header-nav-inner"><div class="header-nav-menubtn"><i class="fas fa-bars"></i></div><div class="header-nav-menu"><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/"><span class="header-nav-menu-item__icon"><i class="fas fa-home"></i></span><span class="header-nav-menu-item__text">首页</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/archives/"><span class="header-nav-menu-item__icon"><i class="fas fa-folder-open"></i></span><span class="header-nav-menu-item__text">归档</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/categories/"><span class="header-nav-menu-item__icon"><i class="fas fa-layer-group"></i></span><span class="header-nav-menu-item__text">分类</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/tags/"><span class="header-nav-menu-item__icon"><i class="fas fa-tags"></i></span><span class="header-nav-menu-item__text">标签</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/friends/"><span class="header-nav-menu-item__icon"><i class="fas fa-user-plus"></i></span><span class="header-nav-menu-item__text">Friends</span></a></div></div><div class="header-nav-search"><span class="header-nav-search__icon"><i class="fas fa-search"></i></span><span class="header-nav-search__text">搜索</span></div><div class="header-nav-mode"><div class="mode"><div class="mode-track"><span class="mode-track-moon"></span><span class="mode-track-sun"></span></div><div class="mode-thumb"></div></div></div></div></nav></div></header><main class="main" id="main"><div class="main-inner"><div class="content-wrap" id="content-wrap"><div class="content" id="content"><!-- Just used to judge whether it is an article page--><div id="is-post"></div><div class="post"><header class="post-header"><h1 class="post-title">EXT4结构略解——教你自己解析EXT4文件系统</h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2022-05-27</span></span><span class="post-meta-item post-meta-item--updatetime"><span class="post-meta-item__icon"><i class="far fa-calendar-check"></i></span><span class="post-meta-item__info">更新于</span><span class="post-meta-item__value">2023-04-30</span></span><span class="post-meta-item post-meta-item--visitors"><span class="post-meta-item__icon"><i class="fas fa-eye"></i></span><span class="post-meta-item__info">阅读次数</span><span class="post-meta-item__value" id="busuanzi_value_page_pv"></span></span></div></header><div class="post-body">
+        <h2 id="一-前言"   >
+          <a href="#一-前言" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#一-前言"></a> 一、前言</h2>
+      
+<p>EXT4 是最近版本的 Linux 最常用的系统，是 EXT3 的升级版本，并且可以向前兼容 EXT3 和 EXT2 。因此只要可以解析 EXT4 ，那么就可以解析相当一部分的 Linux 镜像了。</p>
+<p>如果你没看过上一篇NTFS结构略解，建议先去看一下这篇文章的前置知识部分：<a href="https://cdcq.github.io/2022/04/18/20220418a/">NTFS结构略解</a> 。这部分包含了扇区、CHS、LBA、MBR 等概念，对自己手动解析是很有帮助的，这里就不再说一遍了。</p>
+<p>文章主要参考的是 Linux 内核文档：<span class="exturl"><a class="exturl__link"   target="_blank" rel="noopener" href="https://www.kernel.org/doc/html/latest/filesystems/ext4/globals.html" >内核文档</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span> ，由于 Linux 是开源的，因此学习起来也比 NTFS 方便很多。这篇文档内容非常全面，而本文只做一个入门性质的引导，还有很多没有提及的地方，因此如果你有更专业的需求还是有必要参考内核文档的。</p>
+<p>这篇文章的文件结构解析同样都和实际镜像分析结合在一起，同样也推荐读者自己拿个一个 EXT4 镜像解析从引导记录到文件数据的每一部分，这对加深对 EXT4 的理解和掌握很有帮助。</p>
+
+        <h2 id="二-主引导扇区"   >
+          <a href="#二-主引导扇区" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#二-主引导扇区"></a> 二、主引导扇区</h2>
+      
+<p>EXT4 的主引导扇区和 NTFS 的结构很类似，但还是有些许不同，因此这里再次展示一下主引导扇区的结构：</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">------ LBA0 ------</span><br><span class="line">0000 - 60 7C 66 89  # 启动代码</span><br><span class="line">01BE - 80 20 21 00  # MBR</span><br><span class="line">    80              # 分区状态，80为活动分区</span><br><span class="line">    20 21 00        # 分区起始的CHS,似乎没有意义（因为CHS已经不用了）</span><br><span class="line">    83              # 文件系统类型，83为ext4</span><br><span class="line">    FE FF FF        # 分区结束的CHS,应该没有意义</span><br><span class="line">    00 08 00 00     # 分区开始的LBA，起始地址为0x800*512</span><br><span class="line">    00 F0 7F 02     # 分区大小，可以算出是20G</span><br></pre></td></tr></table></div></figure>
+<p>从 1BEH 开始每 16 个字节都是一个 MBR 条目。</p>
+<p>这里与 NTFS 最大的不同有两个，一个是启动代码不同，另一个是第二个字段：分区起始的 CHS 意义不同。在 NTFS 中这一字段是可以转化成分区开始的 LBA 的，但是在这里似乎做不到，我怀疑是因为 CHS 已经不用了，所以这个字段值没有意义。总之解析 EXT4 时直接访问分区开始的 LBA 就行，不用管起始和结束的 CHS 。</p>
+
+        <h2 id="三-块-块组-超级块和组描述符"   >
+          <a href="#三-块-块组-超级块和组描述符" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#三-块-块组-超级块和组描述符"></a> 三、块、块组、超级块和组描述符</h2>
+      
+<p>EXT4 操作数据的基本单元是块，这个概念和 NTFS 的簇十分类似，都是将整数个扇区聚合在一起以加快操作速度。同时为了方便管理，EXT4 在块的基础上又封装了一层，由整数个块组成一个块组。为了工作效率，EXT4 会尽量保证一个文件的所有数据块都位于一个块组内。块的大小和块组的大小都由超级块来描述。</p>
+
+        <h3 id="31-块组的结构"   >
+          <a href="#31-块组的结构" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#31-块组的结构"></a> 3.1 块组的结构</h3>
+      
+<p>第 0 个块组中包含最多的信息，它的结构大概是这样的：</p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>填充</th>
+<th>超级块</th>
+<th>组描述符表</th>
+<th>保留 GDT 块</th>
+<th>数据块位图</th>
+<th>inode 位图</th>
+<th>inode 表</th>
+<th>数据块</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1024 字节</td>
+<td>1 块</td>
+<td>许多块</td>
+<td>1 块</td>
+<td>1 块</td>
+<td>1 块</td>
+<td>许多块</td>
+<td>许多块</td>
+</tr>
+</tbody>
+</table></div>
+<p>这里需要注意的是，第 0 个块组中的第 0 个字节不是超级块，而且很大概率前 1024 个字节都是 0 。这个填充是为了方便安装 x86 引导扇区或者别的东西的。这也是为什么我要在第二节强调分区的起始地址的计算方法。因为如果没有注意到这一点的话，不管是用 CHS 算还是用 LBA 算都会指向一个全是 0 的区域，会让人一头雾水。</p>
+<p>之后的块的结构就各不相同了，这涉及到 EXT4 的两个特性：稀疏超级块 和 元块组。</p>
+<ol>
+<li>稀疏超级块（sparse super）</li>
+</ol>
+<p>如果开启了稀疏超级块功能，那么只会在 3, 5, 7 的整数幂个块（包括第 1 块）的开头存放超级块的备份，否则将会在每一个块存放超级块的备份。</p>
+<ol start="2">
+<li>元块组（meta block group）</li>
+</ol>
+<p>由于每个块组最多只能储存 128MB 的数据，块组的数量还是非常多的，这时组描述符表就会变得特别大。因此 EXT4 又在块组的基础上封装一层，可以将若干个块组合并成一个元块组。在元块组中，只有第 0 、1 和最后一个块组拥有块组描述符表的备份。如果没有开启元块组功能，那么每个块组都会有一个块组描述符表的备份。</p>
+<p>如果一个分区同时开启了上面两个功能，并且元块组的个数为 64 个组，那么它的块组结构就会是这样：</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">第0组：填充 超级块 组描述符表 保留GDT块 块位图 inode位图 inode表 数据块</span><br><span class="line">第1组：超级块 组描述符表 保留GDT块 块位图 inode位图 inode表 数据块</span><br><span class="line">第2组：块位图 inode位图 inode表 数据块</span><br><span class="line">第3组：超级块 块位图 inode位图 inode表 数据块</span><br><span class="line">...</span><br><span class="line">第63组：组描述符表 保留GDT块 块位图 indoe位图 inode表 数据块</span><br></pre></td></tr></table></div></figure>
+<p>对于组内项目的顺序，一般确定超级块和块组描述符号一定按顺序位于组的开头（如果有的话），但其余项目都是不固定的，例如位图可能位于 inode 表的后面，这个要通过查看组描述符中的属性来确定。</p>
+
+        <h3 id="32-超级块"   >
+          <a href="#32-超级块" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#32-超级块"></a> 3.2 超级块</h3>
+      
+<p>超级块储存整个 EXT4 的基本信息，它的内容十分丰富：</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line">----- LBA800 -----  # EXT4分区</span><br><span class="line">00100000 - 00 00 00 00  # 前1024个字节全是0，为了允许安装x86引导扇区或者别的东西</span><br><span class="line">00100400 - 00 00 14 00  # 超级块</span><br><span class="line">    00 04 | 00 00 14 00 # 总indoe数</span><br><span class="line">    04 04 | 00 FE 4F 00 # 总块数</span><br><span class="line">    08 04 | E6 FF 03 00 # 超级用户才能分配的块数</span><br><span class="line">    0C 04 | 8C 1E 3B 00 # 空闲块数</span><br><span class="line">    10 04 | 11 CC 11 00 # 空闲inode数</span><br><span class="line">    14 04 | 00 00 00 00 # 第一个数据块，块大小1k的系统至少是1,其他一般是0</span><br><span class="line">    18 04 | 02 00 00 00 # 块大小，2的10加这个数次方为块大小，这里是2^(10+2)=4K</span><br><span class="line">    1C 04 | 02 00 00 00 # 簇大小，和块大小算法一样，如果没有使用bigalloc</span><br><span class="line">                        # 则和块大小一样</span><br><span class="line">    20 04 | 00 80 00 00 # 每组块数（含超级块、组描述符等）</span><br><span class="line">    24 04 | 00 80 00 00 # 每组簇数，如果没有使用bigalloc则必须和每组块数一样</span><br><span class="line">    28 04 | 00 20 00 00 # 每组inode数</span><br><span class="line">    2C 04 | 85 B6 83 62 # 挂载时间，自纪元（epoch）以来的秒数</span><br><span class="line">    30 04 | 28 45 84 62 # 写入时间，自纪元以来的秒数</span><br><span class="line">    34 02 | 03 00       # 自上次fsck以来的挂载次数</span><br><span class="line">    36 02 | FF FF       # 超出fsck需要的挂载数</span><br><span class="line">    38 02 | 53 EF       # 魔数，一定是EF53</span><br><span class="line">    3A 02 | 01 00       # 文件系统状态，1表示干净卸载，2表示检测到错误</span><br><span class="line">                        # 4表示orphans被找回</span><br><span class="line">    3C 02 | 01 00       # 检测到错误时的行为，1表示继续，2表示以只读方式重挂载</span><br><span class="line">                        # 3表示panic</span><br><span class="line">    3E 02 | 00 00       # 次要修订级别</span><br><span class="line">    40 04 | 7F 23 84 62 # 上次检查的时间，自纪元以来的秒数</span><br><span class="line">    44 04 | 00 00 00 00 # 检查间隔的最大秒数</span><br><span class="line">    48 04 | 00 00 00 00 # 创造者的操作系统，0是linux，1是Hurd，</span><br><span class="line">                        # 2是Masix,3是FreeBSD,4是Lites</span><br><span class="line">    4C 04 | 01 00 00 00 # 修订级别</span><br><span class="line">    50 02 | 00 00       # 保留块的默认uid</span><br><span class="line">    52 02 | 00 00       # 保留块的默认gid</span><br><span class="line">    # 这些东西只适用于 EXT4_DYNAMIC_REV 超级块</span><br><span class="line">    #（没懂啥意思，不知道指上面的还是下面的）</span><br><span class="line">    54 04 | 0B 00 00 00 # 第一个非保留的inode</span><br><span class="line">    58 02 | 00 01       # inode结构的字节数</span><br><span class="line">    5A 02 | 00 00       # 本超级块的块组</span><br><span class="line">    5C 04 | 3C 00 00 00 # 兼容的功能集标志</span><br><span class="line">    60 04 | C2 02 00 00 # 不兼容的功能集</span><br><span class="line">    64 04 | 6B 04 00 00 # 只读功能集</span><br><span class="line">    68 16 | D9 8A ..    # 卷的128bit UUID</span><br><span class="line">    78 16 | 00 00 ..    # 卷标（char）</span><br><span class="line">    88 64 | 2F 00 61 .. # 文件系统上次被挂载的目录</span><br><span class="line">    C8 04 | 00 00 00 00 # 压缩用（e2fsprogs/Linux不用）</span><br><span class="line">    CC 01 | 0           # e2fsprogs/Linux不用</span><br><span class="line">    CD 01 | 0           # e2fsprogs/Linux不用</span><br><span class="line">    CE 02 | 00 04       # 为将来的系统扩展保留的GDT条目数</span><br><span class="line">    D0 16 | 00 00 ..    # 日志超级块的UUID</span><br><span class="line">    E0 04 | 08 00 00 00 # 日志超级块的inode号</span><br><span class="line">    E4 04 | 00 00 00 00 # 日志超级块的设备号，如果开启了扩展日志功能</span><br><span class="line">    E8 04 | 00 00 00 00 # 要删除的孤立inode的起点</span><br><span class="line">    EC 16 | 87 EC 0A .. # HTREE哈希种子</span><br><span class="line">    FC 01 | 01          # 目录哈希的默认算法，0是Legacy，1是Half MD4等</span><br><span class="line">    FD 01 | 01          # 如果是0或1，那么s_jnl_blocks字段包含</span><br><span class="line">                        # inode的i_block[]数组和i_size副本 </span><br><span class="line">    FE 02 | 40 00       # 如果设置了64位不兼容功能，则表示组描述符的字节数</span><br><span class="line">    0100 04 | 0C 00 00 00   # 默认挂载选项</span><br><span class="line">    0104 04 | 00 00 00 00   # 如果开启了meta_bg功能，表示第一个元块块组</span><br><span class="line">    0108 04 | 7F 23 84 62   # 文件系统创建的时间，自纪元以来的秒数</span><br><span class="line">    010C 68 | 0A F3 01 ..   # 日志inode的i_block[]数组前15个元素的备份</span><br><span class="line">                            # 副本以及i_size_high和i_size的备份</span><br><span class="line">    # 仅当设置了EXT4_FEATURE_COMPAT_64BIT是64位支持才有效（没懂啥意思）</span><br><span class="line">    0150 04 | 00 00 00 00   # 块数的高32位（估计是为了扩展用）</span><br><span class="line">    0154 04 | 00 00 00 00   # 预留块数的高32位</span><br><span class="line">    0158 04 | 00 00 00 00   # 空闲块数的高32位</span><br><span class="line">    015C 02 | 20 00         # 所有inode至少有的字节数</span><br><span class="line">    015E 02 | 20 00         # 新inode应该预留的字节</span><br><span class="line">    0160 04 | 01 00 00 00   # 各种各样的标志，1是使用有符号hash等</span><br><span class="line">    0164 02 | 00 00         # RAID步幅（stride）</span><br><span class="line">    0166 02 | 00 00         # 好像没有用</span><br><span class="line">    0168 08 | 00 00 ..      # 多重挂载保护数据的块</span><br><span class="line">    0170 04 | 00 00 00 00   # RAID步幅宽度</span><br><span class="line">    0174 01 | 04            # 灵活块组的大小，2的这个数次方，这里是16</span><br><span class="line">    0175 01 | 01            # 元数据校验和算法，唯一一个合法值是1（crc32c)</span><br><span class="line">    0176 02 | 00 00         # 填充</span><br><span class="line">    0178 08 | 05 B6 ..      # 在这个文件系统的生命周期内写入的KiB数</span><br><span class="line">    # 这个镜像之后就全是0了，不写了</span><br><span class="line">    03FC 04 | 90 61 5E 94   # 超级块校验和</span><br></pre></td></tr></table></div></figure>
+<p>里边存放着文件系统开启的特性（如前面提到的元块组和稀疏超级块），这些内容在写解析器的时候要特别注意。限于篇幅没有在上表详细列出，如果有需要可以参考内核文档。另外，不兼容功能集中的“不兼容”并不是指这个系统没有开启的功能集，可能指的是和其他版本不兼容但是开启的功能。元块组功能就位于不兼容功能集。</p>
+<p>通过解读超级块，我们可以知道这个 EXT4 系统有以下属性：</p>
+<ol>
+<li>块的大小是 4KB</li>
+<li>每组有 32768 个块</li>
+<li>每组有 8192 个 inode</li>
+<li>没有开元块组功能，但是开了稀疏超级块功能</li>
+</ol>
+<p>所以在 0x00100000 + 4096 * 0x8000 和 0x00100000 + 4096 * 0x8000 * 3 应该各有一个超级块，而 0x00100000 + 4096 * 0x8000 * 2 没有超级块，如果查看镜像就可以发现确实是这样的。</p>
+
+        <h3 id="33-组描述符"   >
+          <a href="#33-组描述符" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#33-组描述符"></a> 3.3 组描述符</h3>
+      
+<p>组描述符表紧跟在超级块后面（如果有的话），包含系统中所有组的信息。每个组的组描述符占用一个块，按组的顺序依次排列。</p>
+<p>一个组描述符的结构是这样的：</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">00101000 - 04 04 00 00  # 块组描述符</span><br><span class="line">    00 04 | 04 04 00 00 # 块位图位置的低32位</span><br><span class="line">    04 04 | 14 04 00 00 # inode位图位置的低32位</span><br><span class="line">    08 04 | 24 04 00 00 # inode表位置的低32位</span><br><span class="line">    0C 02 | D7 53       # 空闲块数的低16位</span><br><span class="line">    0E 02 | F1 1F       # 空闲inode数的低16位</span><br><span class="line">    10 02 | 02 00       # 目录数的低16位</span><br><span class="line">    12 02 | 04 00       # 块组标志，1是inode标未初始化，2是块位图未初始化</span><br><span class="line">                        # 4是inode表已经清零</span><br><span class="line">    14 04 | 00 00 00 00 # 快照排除(exclusion）位图位置的低32位</span><br><span class="line">    18 02 | BF 2F       # 块位图校验和的低16位</span><br><span class="line">    1A 02 | 56 74       # inode位图校验和的低16位</span><br><span class="line">    1C 02 | F0 1F       # 未使用inode数的低16位</span><br><span class="line">    1E 02 | 1B EF       # 组描述符校验和，如果设置了GDT_CSUM功能则是crc16，</span><br><span class="line">                        # 如果设置了METADATA_CSUM功能则是crc32c的低16位。</span><br><span class="line">                        # 这个数算crc16的时候跳过，算crc32的时候置0</span><br><span class="line">    20 04 | 00 00 00 00 # 块位图位置的高32位</span><br><span class="line">    24 04 | 00 00 00 00 # inode位图位置的高32位</span><br><span class="line">    28 04 | 00 00 00 00 # inode表位置的高32位</span><br><span class="line">    2C 02 | 00 00       # 空闲块数的高16位</span><br><span class="line">    2E 02 | 00 00       # 空闲inode数的高16位</span><br><span class="line">    30 02 | 00 00       # 目录数的高16位</span><br><span class="line">    32 02 | 00 00       # 未使用inode数的高16位</span><br><span class="line">    34 04 | 00 00 00 00 # 快照排除位图的高32位</span><br><span class="line">    38 02 | CC 8C       # 块位图校验和的高16位</span><br><span class="line">    3A 02 | 9A 3D       # inode位图校验和的高16位</span><br><span class="line">    3C 04 | 00 00 00 00 # 填充</span><br></pre></td></tr></table></div></figure>
+<p>虽然项目很多，但是其实有用的信息只有 inode 表的位置，因为块位图和 inode 位图在读镜像中都没有用，而每组的 inode 数都是固定的，在超级块中定义。在这个例子中，inode 表的位置为</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">00100000 + 0x424 * 4096</span><br></pre></td></tr></table></div></figure>
+
+        <h2 id="四-inode-和-inode-表"   >
+          <a href="#四-inode-和-inode-表" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#四-inode-和-inode-表"></a> 四、Inode 和 Inode 表</h2>
+      
+<p>Inode 全称是索引节点，在 EXT4 中，每个文件都由唯一的 inode 表示。有时我们可能会是说“ xx 文件的 inode 是多少”，这里的 inode 指的就是这个文件的 inode 编号。Inode 表和组描述符表的结构类似，每个 inode 占用一个块，并且按照顺序排列。</p>
+<p>要定位一个 inode 的位置，首先需要从超级块中读出每块的组数 sb.s_inodes_per_group ，这样这个 inode 所在的块组就是</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(inode_number - 1) / sb.s_inodes_per_group</span><br></pre></td></tr></table></div></figure>
+<p>这里注意，inode_number 要 -1 ，因为不存在实际上的 inode0 ，0 号 inode 会被用于一些特殊情况。此外注意算式中的除是整除。</p>
+<p>之后再计算块在组内的位置：</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(inode_number - 1) % sb.s_inodes_per_group</span><br></pre></td></tr></table></div></figure>
+<p>用这个值乘上一块的大小，再加上 inode 表起始的地址就可以了。</p>
+<p>除了 inode0 并不实际存在以外，inode1 也有特殊用途，它用于跟踪磁盘上的坏块。因此在我的镜像上 inode1 为空 ，inode2 才表示根目录。</p>
+<p>Inode 的格式大概是这样：</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">00524100 - ED 41 00 00  # 根目录的inode记录</span><br><span class="line">    00 02 | ED 41       # 文件模式，1是其他人可以执行，2是其他人可能会写等</span><br><span class="line">                        # 0x4000表示是目录（注意小端序储存）</span><br><span class="line">    02 02 | 00 00       # 所有者UID的低16位</span><br><span class="line">    04 04 | 00 10 00 00 # 字节数的低32位</span><br><span class="line">    08 04 | 7F 23 84 62 # 上次访问时间，但是如果设置了EA_INODE inode标志</span><br><span class="line">                        # 则此inode存储扩展属性值，并且此字段包含该值的校验和</span><br><span class="line">    0C 04 | AB B3 83 62 # 上次inode改变时间</span><br><span class="line">    10 04 | AB B3 83 62 # 上次数据修改时间</span><br><span class="line">    14 04 | 00 00 00 00 # 删除时间</span><br><span class="line">    18 02 | 00 00       # GID的低16位</span><br><span class="line">    1A 02 | 18 00       # 硬连结数，启用DIR_NLINK功能后，ext4支持超过64998</span><br><span class="line">                        # 个子目录，方法是将此字段设为1，表示不知道硬链接的数量</span><br><span class="line">    1C 04 | 08 00 00 00 # “块”数的低32位，如果文件系统未设置huge_file功能标志</span><br><span class="line">                        # 则文件会占用这个数的 512 字节块。如果设置了huge_file</span><br><span class="line">                        # 并且下一个字段未设置EXT4_HUGE_FILE_FL，则该文件占用</span><br><span class="line">                        # 块数个512字节块。如果设置了huge_file并且下一个字段</span><br><span class="line">                        # 设置了EXT4_HUGE_FILE_FL则该文件会占用块数个文件系统块</span><br><span class="line">    20 04 | 00 00 08 00 # inode标志</span><br><span class="line">    24 04 | 1F 00 00 00 # 根据创建者的不同该字段有多种含义，对Linux是索引节点版本</span><br><span class="line">    28 60 | 0A F3 ..    # 块图或数据块树，详见“The Contents of inode.i_block&quot;</span><br><span class="line">                        # （内核文档里），ext4中是范围树，储存数据的链接。</span><br><span class="line">                        # 如果数据小于60字节则直接放在这里</span><br><span class="line">    64 04 | 00 00 00 00 # 文件版本</span><br><span class="line">    68 04 | 00 00 00 00 # 扩展属性块的低32位</span><br><span class="line">    6C 04 | 00 00 00 00 # 文件/目录大小的高32位，在ext2/3里总是0</span><br><span class="line">    70 04 | 00 00 00 00 # 片段地址（过时了）</span><br><span class="line">    74 12 | 00 00 ..    # 根据文件系统创建者的不同有多种含义</span><br><span class="line">    80 02 | 20 00       # 这个inode记录的大小-128,或者说是超出原始ext2 inode</span><br><span class="line">                        # 的扩展inode字段的大小，包括此字段</span><br><span class="line">    82 02 | DD 49       # inode位图校验和的高16位</span><br><span class="line">    84 04 | 20 C9 59 C0 # 额外的更改时间位，提供亚秒级的精度</span><br><span class="line">    88 04 | 20 C9 59 C0 # 额外的修改时间位，提供亚秒级的精度</span><br><span class="line">    8C 04 | 00 00 00 00 # 额外的访问时间为，提供亚秒级的精度</span><br><span class="line">    90 04 | 7F 23 84 62 # 文件创建时间，自纪元以来的秒数</span><br><span class="line">    94 04 | 00 00 00 00 # 额外的创建时间位，提供亚秒级的精度</span><br><span class="line">    98 04 | 00 00 00 00 # 版本号的高32位</span><br><span class="line">    9C 04 | 00 00 00 00 # 项目标识</span><br></pre></td></tr></table></div></figure>
+<p>从中可以获取时间信息、大小信息（用块数计算）以及最重要的文件内容。EXT4 的文件内容是通过一种叫做范围树的结构组织的，位于 0x28 偏移，总共 60 字节，结构是这样：</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">60字节的范围树（位于上面的0x28偏移量）：</span><br><span class="line">范围树头</span><br><span class="line">00 02 | 0A F3       # 魔数，一定是0xF30A</span><br><span class="line">02 02 | 01 00       # 树头之后的有效条目数</span><br><span class="line">04 02 | 04 00       # 树头后的最大条目数</span><br><span class="line">06 02 | 00 00       # 这个范围节点在范围树中的深度。0表示这个节点指向数据块，</span><br><span class="line">                    # 否则指向其他范围节点</span><br><span class="line">08 04 | 00 00 00 00 # 树的生成（Lustre使用，但不是标准的ext4）</span><br><span class="line">范围树的内部节点，也称索引节点（这个 inode 这里没有这种节点）</span><br><span class="line">00 04 |             # 这个索引节点开始覆盖文件的块数</span><br><span class="line">04 04 |             # 下一个级别的扩展节点的块号的低32位</span><br><span class="line">08 02 |             # 前一个字段的高16位</span><br><span class="line">0A 02 |             # 未使用</span><br><span class="line">范围树的叶子节点</span><br><span class="line">00 04 | 00 00 00 00 # 此范围节点覆盖的第一个文件块号</span><br><span class="line">04 02 | 01 00       # 范围覆盖的块数，如果&lt;=32768则范围块已经初始化。如果</span><br><span class="line">                    # 值&gt;32768则范围块未初始化且实际长度是这个数-32768</span><br><span class="line">06 02 | 00 00       # 这个范围节点的块号的高16位（应该是组内块号）</span><br><span class="line">08 04 | 24 24 00 00 # 这个范围节点的块号的低32位</span><br></pre></td></tr></table></div></figure>
+<p>沿着内部节点遍历就可以找到想要的访问的文件的位置，可以通过节点开始覆盖文件的块数来判断目标位置是否在这个内部节点，这样就不需要每个树节点都遍历了。</p>
+<p>上表中的范围树只有一个叶子节点，这个节点的表示的起始位置就是这个文件的起始位置。在这个例子中文件内容的起始位置为</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0x100000 + 0x2424 * 4096</span><br></pre></td></tr></table></div></figure>
+<p>此外，如果 0x20 偏移的 inode 标志设置了 inline_data 特性并且文件的内容小于 60 字节，则会直接被放在这里。这样也不用担心文件开头会和魔数冲突的情况，因为可以通过 inline_data 是否打开来判断是范围树还是文件内容。在 ext2 和 ext3 中则采用一种线性索引结构来指示内容位置，这里就不多说了。</p>
+<p>另一个值得注意的点是和 NTFS 不同，EXT4 的 inode 里是没有文件名属性的，而 NTFS 里会有 30H 属性来存储文件名。事实上，EXT4 的文件可能不止有一个文件名，因为可能会同时有多个目录中的链接指向这个 inode 。因此 inode 是文件的别名这种说法是错误的，inode 是文件的本体，而文件名甚至都不是 inode 的属性。</p>
+
+        <h2 id="五-目录索引"   >
+          <a href="#五-目录索引" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#五-目录索引"></a> 五、目录索引</h2>
+      
+<p>目录文件的内容是目录索引，如果 inode 中设置了 EXT4_INDEX_FL 标志，则会使用哈希树来组织索引，否则是简单的线性结构。哈希树的结构比较复杂也比较巧妙，而且只有比较大的目录会打开，所以这里就简单介绍下线性结构。</p>
+<p>线性结构由一系列目录条目紧密排列。EXT4 的目录结构默认为 ext4_dir_entry_2 ，如果 filetype 特性没有打开才会采用 ext4_dir_entry 结构。</p>
+<p>ext4_dir_entry 的结构是这样的：</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">00 04 |             # 这个条目指向的inode，如果为0表示指向为空</span><br><span class="line">04 02 |             # 目录条目的长度，必须是4的倍数</span><br><span class="line">06 02 |             # 文件名的长度</span><br><span class="line">08 xx |             # 文件名</span><br></pre></td></tr></table></div></figure>
+<p>而 ext4_dir_entry_2 的结构是这样的：</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">00 04 | 02 00 00 00 # 这个条目指向的inode,为0表示空</span><br><span class="line">04 02 | 0C 00       # 这个条目的长度，必须是4的倍数</span><br><span class="line">06 01 | 01          # 文件名长度</span><br><span class="line">07 01 | 02          # 文件类型（filetype），0是unknow，1是常规，2是目录等</span><br><span class="line">08 xx | 2E          # 文件名，这里是&quot;.&quot;</span><br></pre></td></tr></table></div></figure>
+<p>可以看到，第 2 版相比第 1 版唯一的区别是把 2 字节的文件名长度拆分成文件名长度和文件类型各 1 字节。这样做的原因是文件名不可能超过 256 字节，所以不如把它拆开多储存一些属性，这样可以避免在遍历目录的时候需要加载每一个 inode 。</p>
+
+        <h2 id="六-总结"   >
+          <a href="#六-总结" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#六-总结"></a> 六、总结</h2>
+      
+<p>至此，你已经学会了从磁盘镜像的第 0 个字节开始，一直解析到根目录的某个文件的过程了，虽然还有很多结构没有写到，例如哈希树，但是手动进行一下实践还是足够的。如果你需要更专业的操作，例如写一个解析器，或者是把解析 EXT4 作为你的专业技能，那么还是需要仔细阅读一遍内核文档（提醒一下，内核文档的链接放在开头了）。内核文档非常详细而且清晰，在学写了这篇文章作为导读之后，相信任何一个读者都可以轻松在内核文档中找到自己想要的内容。同时我也真诚希望不管是抱着业余了解还是专业入门的目的，每个人都能从我这篇略解中得到帮助。</p>
+</div><footer class="post-footer"><div class="post-ending ending"><div class="ending__text">------ 本文结束，感谢您的阅读 ------</div></div><div class="post-copyright copyright"><div class="copyright-author"><span class="copyright-author__name">本文作者: </span><span class="copyright-author__value"><a href="http://cdcq.github.io">cdcq</a></span></div><div class="copyright-link"><span class="copyright-link__name">本文链接: </span><span class="copyright-link__value"><a href="http://cdcq.github.io/2022/05/27/20220527a/">http://cdcq.github.io/2022/05/27/20220527a/</a></span></div><div class="copyright-notice"><span class="copyright-notice__name">版权声明: </span><span class="copyright-notice__value">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" rel="external nofollow" target="_blank">BY-NC-SA</a> 许可协议。转载请注明出处！</span></div></div><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://cdcq.github.io/tags/%E7%94%B5%E5%AD%90%E6%95%B0%E6%8D%AE%E5%8F%96%E8%AF%81/">电子数据取证</a></span><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://cdcq.github.io/tags/%E6%95%99%E7%A8%8B/">教程</a></span></div><nav class="post-paginator paginator"><div class="paginator-prev"><a class="paginator-prev__link" href="/2022/06/14/20220614a/"><span class="paginator-prev__icon"><i class="fas fa-angle-left"></i></span><span class="paginator-prev__text">网络流24题——魔术球问题</span></a></div><div class="paginator-next"><a class="paginator-next__link" href="/2022/05/25/20220525a/"><span class="paginator-prev__text">西电校赛2022H题——朝歌夜雪</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div><div class="comments" id="comments"><div id="gitalk-container"></div></div></div><div class="sidebar-wrap" id="sidebar-wrap"><aside class="sidebar" id="sidebar"><div class="sidebar-nav"><span class="sidebar-nav-toc current">文章目录</span><span class="sidebar-nav-ov">站点概览</span></div><section class="sidebar-toc"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80-%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">
+           一、前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C-%E4%B8%BB%E5%BC%95%E5%AF%BC%E6%89%87%E5%8C%BA"><span class="toc-number">2.</span> <span class="toc-text">
+           二、主引导扇区</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89-%E5%9D%97-%E5%9D%97%E7%BB%84-%E8%B6%85%E7%BA%A7%E5%9D%97%E5%92%8C%E7%BB%84%E6%8F%8F%E8%BF%B0%E7%AC%A6"><span class="toc-number">3.</span> <span class="toc-text">
+           三、块、块组、超级块和组描述符</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#31-%E5%9D%97%E7%BB%84%E7%9A%84%E7%BB%93%E6%9E%84"><span class="toc-number">3.1.</span> <span class="toc-text">
+           3.1 块组的结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#32-%E8%B6%85%E7%BA%A7%E5%9D%97"><span class="toc-number">3.2.</span> <span class="toc-text">
+           3.2 超级块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#33-%E7%BB%84%E6%8F%8F%E8%BF%B0%E7%AC%A6"><span class="toc-number">3.3.</span> <span class="toc-text">
+           3.3 组描述符</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B-inode-%E5%92%8C-inode-%E8%A1%A8"><span class="toc-number">4.</span> <span class="toc-text">
+           四、Inode 和 Inode 表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94-%E7%9B%AE%E5%BD%95%E7%B4%A2%E5%BC%95"><span class="toc-number">5.</span> <span class="toc-text">
+           五、目录索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD-%E6%80%BB%E7%BB%93"><span class="toc-number">6.</span> <span class="toc-text">
+           六、总结</span></a></li></ol></section><!-- ov = overview--><section class="sidebar-ov hide"><div class="sidebar-ov-author"><div class="sidebar-ov-author__avatar"><img class="sidebar-ov-author__avatar_img" src="/images/cdcq.png" alt="avatar"></div><p class="sidebar-ov-author__text">宠辱不惊，闲看庭前花开花落；去留无意，漫随天外云卷云舒。</p></div><div class="sidebar-ov-social"><a class="sidebar-ov-social-item" href="https://github.com/cdcq" target="_blank" rel="noopener"><span class="sidebar-ov-social-item__icon"><i class="fab fa-github"></i></span><span class="sidebar-ov-social-item__text">github</span></a></div><div class="sidebar-ov-feed"><span class="sidebar-ov-feed-email"><a class="sidebar-ov-feed-email__link" href="http://eepurl.com/hwUpkL" target="_blank" rel="noopener"><span class="sidebar-ov-feed-email__icon"><i class="fas fa-envelope"></i></span><span>Email 订阅</span></a></span><span class="sidebar-ov-feed-rss"><a class="sidebar-ov-feed-rss__link" href="/atom.xml" target="_blank" rel="noopener"><span class="sidebar-ov-feed-rss__icon"><i class="fas fa-rss"></i></span><span>RSS 订阅</span></a></span></div><div class="sidebar-ov-state"><a class="sidebar-ov-state-item sidebar-ov-state-item--posts" href="/archives/"><div class="sidebar-ov-state-item__count">32</div><div class="sidebar-ov-state-item__name">归档</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--categories" href="/categories/"><div class="sidebar-ov-state-item__count">17</div><div class="sidebar-ov-state-item__name">分类</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--tags" href="/tags/"><div class="sidebar-ov-state-item__count">23</div><div class="sidebar-ov-state-item__name">标签</div></a></div></section><div class="sidebar-reading"><div class="sidebar-reading-info"><span class="sidebar-reading-info__text">你已阅读了 </span><span class="sidebar-reading-info__num">0</span><span class="sidebar-reading-info__perc">%</span></div><div class="sidebar-reading-line"></div></div></aside></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2023</span><span class="footer__icon"><i class="fab fa-github"></i></span><span>cdcq</span></div><div><span>由 <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a> 强力驱动</span><span> v5.4.0</span><span class="footer__devider">|</span><span>主题 - <a href="https://github.com/liuyib/hexo-theme-stun/" title="Stun" target="_blank" rel="noopener">Stun</a></span><span> v2.6.2</span></div><div class="busuanzi"><span class="busuanzi-siteuv"><span class="busuanzi-siteuv__icon"><i class="fas fa-user"></i></span><span class="busuanzi-siteuv__info">访问人数</span><span class="busuanzi-siteuv__value" id="busuanzi_value_site_uv"></span></span><span class="busuanzi-sitepv"><span class="busuanzi-siteuv__icon"><i class="fas fa-eye"></i></span><span class="busuanzi-siteuv__info">浏览总量</span><span class="busuanzi-siteuv__value" id="busuanzi_value_site_pv"></span></span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div><div class="back2top" id="back2top"><span class="back2top__icon"><i class="fas fa-rocket"></i></span></div></div><div class="search-mask"></div><div class="search-popup"><span class="search-close"></span><div class="search-input"><input placeholder="搜索文章（支持多关键词，请用空格分隔）"></div><div class="search-results"></div></div><script src="https://cdn.jsdelivr.net/npm/jquery@v3.4.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/npm/ribbon.js@latest/dist/ribbon.min.js" size="120" alpha="0.6" zIndex="-1"></script><script src="https://cdn.jsdelivr.net/npm/lazyload@2.0.0-rc.2/lazyload.min.js"></script><script>function initSearch() {
+  var isXML = true;
+  var search_path = 'search.xml';
+
+  if (!search_path) {
+    search_path = 'search.xml';
+  } else if (/json$/i.test(search_path)) {
+    isXML = false;
+  }
+
+  var path = '/' + search_path;
+  $.ajax({
+    url: path,
+    dataType: isXML ? 'xml' : 'json',
+    async: true,
+    success: function (res) {
+      var datas = isXML ? $('entry', res).map(function () {
+        // 将 XML 转为 JSON
+        return {
+          title: $('title', this).text(),
+          content: $('content', this).text(),
+          url: $('url', this).text()
+        };
+      }).get() : res;
+      var $input = $('.search-input input');
+      var $result = $('.search-results');
+      // 搜索对象（标题、内容）的权重，影响显示顺序
+      var WEIGHT = { title: 100, content: 1 };
+      var searchPost = function () {
+        var searchText = $input.val().toLowerCase().trim();
+        // 根据空白字符分隔关键字
+        var keywords = searchText.split(/[\s]+/);
+        // 搜索结果
+        var matchPosts = [];
+
+        // 有多个关键字时，将原文字整个保存下来
+        if (keywords.length > 1) {
+          keywords.push(searchText);
+        }
+        // 防止未输入字符时搜索
+        if (searchText.length > 0) {
+          datas.forEach(function (data) {
+            var isMatch  = false;
+            // 没有标题的文章使用预设的 i18n 变量代替
+            var title = (data.title && data.title.trim()) || '[ 文章无标题 ]';
+            var titleLower = title && title.toLowerCase();
+            // 删除 HTML 标签 和 所有空白字符
+            var content = data.content && data.content.replace(/<[^>]+>/g, '');
+            var contentLower = content && content.toLowerCase();
+            // 删除重复的 /
+            var postURL = data.url && decodeURI(data.url).replace(/\/{2,}/g, '/');
+            // 标题中匹配到的关键词
+            var titleHitSlice = [];
+            // 内容中匹配到的关键词
+            var contentHitSlice = [];
+
+            keywords.forEach(function (keyword) {
+              /**
+              * 获取匹配的关键词的索引
+              * @param {String} keyword 要匹配的关键字
+              * @param {String} text 原文字
+              * @param {Boolean} caseSensitive 是否区分大小写
+              * @param {Number} weight 匹配对象的权重。权重大的优先显示
+              * @return {Array}
+              */
+              function getIndexByword (word, text, caseSensitive, weight) {
+                if (!word || !text) {
+                  return [];
+                };
+
+                var startIndex = 0; // 每次匹配的开始索引
+                var index = -1;     // 匹配到的索引值
+                var result = [];    // 匹配结果
+
+                if (!caseSensitive) {
+                  word = word.toLowerCase();
+                  text = text.toLowerCase();
+                }
+
+                while((index = text.indexOf(word, startIndex)) !== -1) {
+                  var hasMatch = false;
+                  // 索引位置相同的关键词，保留长度较长的
+                  titleHitSlice.forEach(function (hit) {
+                    if (hit.index === index && hit.word.length < word.length) {
+                      hit.word = word;
+                      hasMatch = true;
+                    }
+                  });
+                  startIndex = index + word.length;
+                  !hasMatch && result.push({ index: index, word: word, weight: weight });
+                }
+                return result;
+              }
+              titleHitSlice = titleHitSlice.concat(getIndexByword(keyword, titleLower, false, WEIGHT.title));
+              contentHitSlice = contentHitSlice.concat(getIndexByword(keyword, contentLower, false, WEIGHT.content));
+            });
+
+            var hitTitle = titleHitSlice.length;
+            var hitContent = contentHitSlice.length;
+
+            if (hitTitle > 0 || hitContent > 0) {
+              isMatch = true;
+            }
+            if (isMatch) {
+              ;[titleHitSlice, contentHitSlice].forEach(function (hit) {
+                // 按照匹配文字的索引的递增顺序排序
+                hit.sort(function (left, right) {
+                  return left.index - right.index;
+                });
+              });
+              /**
+              * 给文本中匹配到的关键词添加标记，从而进行高亮显示
+              * @param {String} text 原文本
+              * @param {Array} hitSlice 匹配项的索引信息
+              * @param {Number} start 开始索引
+              * @param {Number} end 结束索引
+              * @return {String}
+              */
+              function highlightKeyword (text, hitSlice, start, end) {
+                if (!text || !hitSlice || !hitSlice.length) {
+                  return;
+                }
+
+                var result = '';
+                var startIndex = start;
+                var endIndex = end;
+                hitSlice.forEach(function (hit) {
+                  if (hit.index < startIndex) {
+                    return;
+                  }
+
+                  var hitWordEnd = hit.index + hit.word.length;
+                  result += text.slice(startIndex, hit.index);
+                  result += '<b>' + text.slice(hit.index, hitWordEnd) + '</b>';
+                  startIndex = hitWordEnd;
+                });
+                result += text.slice(startIndex, endIndex);
+                return result;
+              }
+
+              var postData = {};
+              // 文章总的搜索权重
+              var postWeight = titleHitSlice.length * WEIGHT.title + contentHitSlice.length * WEIGHT.content;
+              // 标记匹配关键词后的标题
+              var postTitle = highlightKeyword(title, titleHitSlice, 0, title.length) || title;
+              // 标记匹配关键词后的内容
+              var postContent;
+              // 显示内容的长度
+              var SHOW_WORD_LENGTH = 200;
+              // 命中关键词前的字符显示长度
+              var SHOW_WORD_FRONT_LENGTH = 20;
+              var SHOW_WORD_END_LENGTH = SHOW_WORD_LENGTH - SHOW_WORD_FRONT_LENGTH;
+
+              // 截取匹配的第一个字符，前后共 200 个字符来显示
+              if (contentHitSlice.length > 0) {
+                var firstIndex = contentHitSlice[0].index;
+                var start = firstIndex > SHOW_WORD_FRONT_LENGTH ? firstIndex - SHOW_WORD_FRONT_LENGTH : 0;
+                var end = firstIndex + SHOW_WORD_END_LENGTH;
+                postContent = highlightKeyword(content, contentHitSlice, start, end);
+              } else { // 未匹配到内容，直接截取前 200 个字符来显示
+                postContent = content.slice(0, SHOW_WORD_LENGTH);
+              }
+              postData.title = postTitle;
+              postData.content = postContent;
+              postData.url = postURL;
+              postData.weight = postWeight;
+              matchPosts.push(postData);
+            }
+          });
+        }
+
+        var resultInnerHtml = '';
+        if (matchPosts.length) {
+          // 按权重递增的顺序排序，使权重大的优先显示
+          matchPosts.sort(function (left, right) {
+            return right.weight - left.weight;
+          });
+          resultInnerHtml += '<ul>';
+          matchPosts.forEach(function (post) {
+            resultInnerHtml += '<li><a class="search-results-title" href="' + post.url + '">';
+            resultInnerHtml += post.title;
+            resultInnerHtml += '</a><div class="search-results-content">';
+            resultInnerHtml += post.content;
+            resultInnerHtml += '</div></li>';
+          });
+          resultInnerHtml += '</ul>';
+        } else {
+          resultInnerHtml += '<div class="search-results-none"><i class="far fa-meh"></i></div>';
+        }
+        $result.html(resultInnerHtml);
+      };
+      $input.on('input', searchPost);
+      $input.on('keyup', function (e) {
+        if (e.keyCode === Stun.utils.codeToKeyCode('Enter')) {
+          searchPost();
+        }
+      });
+    }
+  });
+}
+
+function closeSearch () {
+  $('body').css({ overflow: 'auto' });
+  $('.search-popup').css({ display: 'none' });
+  $('.search-mask').css({ display: 'none' });
+}
+
+window.addEventListener('DOMContentLoaded', function () {
+  Stun.utils.pjaxReloadLocalSearch = function () {
+    $('.header-nav-search').on('click', function (e) {
+      e.stopPropagation();
+      $('body').css('overflow', 'hidden');
+      $('.search-popup')
+        .velocity('stop')
+        .velocity('transition.expandIn', {
+          duration: 300,
+          complete: function () {
+            $('.search-popup input').focus();
+          }
+        });
+      $('.search-mask')
+        .velocity('stop')
+        .velocity('transition.fadeIn', {
+          duration: 300
+        });
+
+      initSearch();
+    });
+    $('.search-mask, .search-close').on('click', function () {
+      closeSearch();
+    });
+    $(document).on('keydown', function (e) {
+      // Escape <=> 27
+      if (e.keyCode === Stun.utils.codeToKeyCode('Escape')) {
+        closeSearch();
+      }
+    });
+  };
+
+  Stun.utils.pjaxReloadLocalSearch();
+}, false);
+
+function safeOpenUrl(url) {
+  var newTab = window.open();
+  newTab.opener = null;
+  newTab.location = url;
+}
+
+function extSearch(engine) {
+  var engines = {
+    google: 'https://www.google.com/search?q=',
+    bing: 'https://cn.bing.com/search?q=',
+    baidu: 'https://www.baidu.com/s?ie=UTF-8&wd=',
+  };
+  var host = window.location.host;
+  var query = $('.search-input input').val().toLowerCase().trim();
+  var uri = engines[engine] + query + ' site:' + host;
+
+  if (query) {
+    safeOpenUrl(uri);
+  } else {
+    Stun.utils.popAlert('warning', '请输入字符');
+  }
+}
+
+var assistSearchList = window.CONFIG.assistSearch;
+
+if (Array.isArray(assistSearchList)) {
+  assistSearchList.forEach(function (name) {
+    document.querySelector('.search-btns-item--' + name).addEventListener('click', function () {
+      extSearch(name);
+    }, false);
+  });
+}</script><link href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" rel="stylesheet" type="text/css"><link href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/copy-tex.css" rel="stylesheet" type="text/css"><script src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/copy-tex.min.js"></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/js-md5@latest/src/md5.min.js"></script><script>function loadGitalk () {
+  if (!document.getElementById('gitalk-container')) {
+    return;
+  }
+
+  var gitalk = new Gitalk({
+    id: md5(window.location.pathname.slice(1)),
+    clientID: '9ff99dad5f63f968ff89',
+    clientSecret: 'a78075e602518c2df48827e684fd5c38e1b0e472',
+    repo: 'cdcq.github.io',
+    owner: 'cdcq',
+    admin: ['cdcq'],
+    distractionFreeMode: 'false',
+    language: 'zh-CN'
+  });
+  gitalk.render('gitalk-container');
+}
+
+if (false) {
+  loadGitalk();
+} else {
+  window.addEventListener('DOMContentLoaded', loadGitalk, false);
+}</script><script src="/js/utils.js?v=2.6.2"></script><script src="/js/stun-boot.js?v=2.6.2"></script><script src="/js/scroll.js?v=2.6.2"></script><script src="/js/header.js?v=2.6.2"></script><script src="/js/sidebar.js?v=2.6.2"></script><script type="application/json" src="/search.xml"></script></body></html>

@@ -1,0 +1,732 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="format-detection" content="telephone=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><link rel="icon" href="/images/cdcq.png?v=2.6.2" type="image/png" sizes="16x16"><link rel="icon" href="/images/cdcq.png?v=2.6.2" type="image/png" sizes="32x32"><meta name="description" content="这是一篇流水帐">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NTFS结构略解——教你自己解析NTFS文件系统">
+<meta property="og:url" content="http://cdcq.github.io/2022/04/18/20220418a/index.html">
+<meta property="og:site_name" content="cdcq">
+<meta property="og:description" content="这是一篇流水帐">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://cdcq.github.io/images/220418/22041801.png">
+<meta property="article:published_time" content="2022-04-18T01:25:24.000Z">
+<meta property="article:modified_time" content="2023-04-30T13:57:03.398Z">
+<meta property="article:author" content="cdcq">
+<meta property="article:tag" content="电子数据取证">
+<meta property="article:tag" content="教程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://cdcq.github.io/images/220418/22041801.png"><title>NTFS结构略解——教你自己解析NTFS文件系统 | cdcq</title><link ref="canonical" href="http://cdcq.github.io/2022/04/18/20220418a/"><link rel="alternate" href="/atom.xml" type="application/atom+xml"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.12.1/css/all.min.css" type="text/css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.css" type="text/css"><link rel="stylesheet" href="/css/index.css?v=2.6.2"><script>var Stun = window.Stun || {};
+var CONFIG = {
+  root: '/',
+  algolia: undefined,
+  assistSearch: undefined,
+  fontIcon: {"prompt":{"success":"fas fa-check-circle","info":"fas fa-arrow-circle-right","warning":"fas fa-exclamation-circle","error":"fas fa-times-circle"},"copyBtn":"fas fa-copy"},
+  sidebar: {"offsetTop":"20px","tocMaxDepth":6},
+  header: {"enable":true,"showOnPost":false,"scrollDownIcon":true},
+  postWidget: {"endText":true},
+  nightMode: {"enable":true},
+  back2top: {"enable":true},
+  codeblock: {"style":"default","highlight":"light","wordWrap":true},
+  reward: false,
+  fancybox: false,
+  zoomImage: {"gapAside":"20px"},
+  galleryWaterfall: undefined,
+  lazyload: true,
+  pjax: undefined,
+  externalLink: {"icon":{"enable":true,"name":"fas fa-external-link-alt"}},
+  shortcuts: undefined,
+  prompt: {"copyButton":"复制","copySuccess":"复制成功","copyError":"复制失败"},
+  sourcePath: {"js":"js","css":"css","images":"images"},
+};
+
+window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 5.4.0"></head><body><div class="container" id="container"><header class="header" id="header"><div class="header-inner header-inner--height header-inner--bgcolor"><nav class="header-nav header-nav--sticky"><div class="header-nav-inner"><div class="header-nav-menubtn"><i class="fas fa-bars"></i></div><div class="header-nav-menu"><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/"><span class="header-nav-menu-item__icon"><i class="fas fa-home"></i></span><span class="header-nav-menu-item__text">首页</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/archives/"><span class="header-nav-menu-item__icon"><i class="fas fa-folder-open"></i></span><span class="header-nav-menu-item__text">归档</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/categories/"><span class="header-nav-menu-item__icon"><i class="fas fa-layer-group"></i></span><span class="header-nav-menu-item__text">分类</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/tags/"><span class="header-nav-menu-item__icon"><i class="fas fa-tags"></i></span><span class="header-nav-menu-item__text">标签</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/friends/"><span class="header-nav-menu-item__icon"><i class="fas fa-user-plus"></i></span><span class="header-nav-menu-item__text">Friends</span></a></div></div><div class="header-nav-search"><span class="header-nav-search__icon"><i class="fas fa-search"></i></span><span class="header-nav-search__text">搜索</span></div><div class="header-nav-mode"><div class="mode"><div class="mode-track"><span class="mode-track-moon"></span><span class="mode-track-sun"></span></div><div class="mode-thumb"></div></div></div></div></nav></div></header><main class="main" id="main"><div class="main-inner"><div class="content-wrap" id="content-wrap"><div class="content" id="content"><!-- Just used to judge whether it is an article page--><div id="is-post"></div><div class="post"><header class="post-header"><h1 class="post-title">NTFS结构略解——教你自己解析NTFS文件系统</h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2022-04-18</span></span><span class="post-meta-item post-meta-item--updatetime"><span class="post-meta-item__icon"><i class="far fa-calendar-check"></i></span><span class="post-meta-item__info">更新于</span><span class="post-meta-item__value">2023-04-30</span></span><span class="post-meta-item post-meta-item--visitors"><span class="post-meta-item__icon"><i class="fas fa-eye"></i></span><span class="post-meta-item__info">阅读次数</span><span class="post-meta-item__value" id="busuanzi_value_page_pv"></span></span></div></header><div class="post-body">
+        <h2 id="一-前言"   >
+          <a href="#一-前言" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#一-前言"></a> 一、前言</h2>
+      
+<p>NTFS（New Technology File System）是微软开发的专用文件系统，是 Windows 默认使用的文件系统，使用数量非常巨大。但是 NTFS 的技术细节是不公开的，所以想要自己解析这个文件系统还是有一定的难度。所幸目前已经有许多关于 NTFS 结构的教程，所以要学习 NTFS 也不是完全没有门道。这篇文章就在前人工作的基础上，结合具体的磁盘数据来解读 NTFS 的结构，从解析分区表开始教大家一步一步还原一个磁盘镜像中的 NTFS 文件。</p>
+<p>需要指出的是，下文中所有文件结构的解析都和实际镜像分析结合在一起呈现。这样的好处是便于读者比较着本文自己动手实践，但是有关结构的呈现可能不如直接列表直观，需要在阅读的时候多进行联想和猜测。同时也鼓励读者自己制作一个 Windows 镜像，然后尝试还原出镜像中某个文件的数据，这个过程对掌握 NTFS 结构的帮助是巨大的。本文的实际镜像分析都来自于同一个 Windows 10 镜像，由于 NTFS 向前和向后兼容性很强，因此不同版本的系统可能存在不同之处。此外 NTFS 系统体量庞大，细节颇多，疏漏之处还请谅解。</p>
+
+        <h2 id="二-前置知识"   >
+          <a href="#二-前置知识" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#二-前置知识"></a> 二、前置知识</h2>
+      
+<p>这部分知识与 NTFS 没有直接的关系，但是对你在一个磁盘镜像里找到 NTFS 分区是很有帮助的。</p>
+
+        <h3 id="扇区"   >
+          <a href="#扇区" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#扇区"></a> 扇区</h3>
+      
+<p>在机械盘中，数据储存在圆形的磁盘上，按同心圆一圈一圈排列，每一圈就叫一个磁道。为了加快运行速度，机械盘把每个磁道等间隔地划分成若干个区域，以一个区域为单元读写数据。由于这个区域在圆形磁道上长得很像扇子，就被称为扇区。到了固态盘时代，虽然不再用圆形磁盘来存取数据了，但仍然需要以某个固定长度的数据为单元操作数据，并且仍然沿用扇区的概念。</p>
+<p>虽然苹果公司警告你最好不要这么做，但一般来说，我们可以认为扇区的大小都是 512 字节。</p>
+<p>在机械盘普遍使用的时候，通常使用 CHS（cylinders-heads-sectors ，磁柱-磁头-扇区）模式来定位一个扇区。但是在固态盘中并不存在磁头和磁柱的概念，并且扇区数更多，所以就采用更单纯的寻址模式：从 0 开始编号每一个区快。这样的编号就称为 LBA（Logical Block Address ，逻辑区块地址）。例如 LBA0 指的就是磁盘的第一个扇区。</p>
+
+        <h3 id="主引导扇区"   >
+          <a href="#主引导扇区" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#主引导扇区"></a> 主引导扇区</h3>
+      
+<p>MBR（Master Boot Record ，主引导扇区）一般是磁盘的首个扇区，也是开机后读取的首个扇区。这里包含磁盘的引导程序以及磁盘分区表，我们关注分区表就行了。</p>
+<p>下面是一个磁盘的 MBR 分区数据以及解析：</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">---- LBA0 ----</span><br><span class="line">0000 - 33 C0 8E D0 # 启动代码</span><br><span class="line">01BE - 00 00 02 00 # 1BE到1FD共64字节是分区表，每个分区信息占16字节</span><br><span class="line">    00                      # 分区状态：00为非活动分区，80为活动分区，其他值没有意义</span><br><span class="line">    00 02 00                # 分区起始位置：0磁头，2扇区，0柱面</span><br><span class="line">                            # 注意不是一个字节一个维度，02的0-5比特为扇区，剩下是柱号</span><br><span class="line">    EE                      # 文件系统标识，EE标识这是GPT分区表</span><br><span class="line">    FE FF 4B                # 分区结束位置，这个数值很奇怪，意义不明</span><br><span class="line">    01 00 00 00             # 分区起始相对扇区号</span><br><span class="line">    FF FF FF FF             # 分区总扇区数，没有意义，因为 GPT 分区是特殊的分区</span><br><span class="line">    MBR/GPT混合分区表会在这里储存GPT分区表的一部分（通常是前4个），但这里只有GPT分区</span><br><span class="line">01FE - 55 AA       # MBR结束标志，前512字节为MBR</span><br></pre></td></tr></table></div></figure>
+<p>可以看到这个磁盘采用的是 GPT 分区，所以主引导扇区里没有分区表。目前 NTFS 常用的是 MBR 分区表和 GPT 分区表，本文就只介绍这两种。</p>
+<ol>
+<li>MBR 分区表</li>
+</ol>
+<p>MBR 分区表和主引导扇区名字一样，因为这个表是直接放在 MBR 里的。但是可以看到 LBA0 的空间很有限，采用 MBR 分区就只能拥有 4 个分区，所以现在很少用。此外还有 MBR/GPT 混合分区，会把 GPT 分区的前 4 个分区放在 MBR 里。如果是纯 GPT 分区则只有一个标识为 0xEE 的分区。</p>
+<ol start="2">
+<li>GPT 分区表</li>
+</ol>
+<p>GPT（GUID Partition Table ，全局唯一标识分区表）又叫 GUID 磁碟分割表，它占用一个 LBA 作为分区表头，记录分区表项的信息，然后接下来的若干个 LBA 储存分区表项。</p>
+<p>下面是一个磁盘的 GPT 分区表头和表项：</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">---- LBA1 ----</span><br><span class="line">0200 - 45 46 49 20 # EFI PART，后面是分区表头</span><br><span class="line">    00 00 01 00             # 修订号（1.0版中值为00 00 01 00）</span><br><span class="line">    5C 00 00 00             # 分区表头大小，通常为92字节，也就是5C</span><br><span class="line">    09 99 BA B9             # 分区表头的CRC校验，计算时这个字段为0，算出后写本字段</span><br><span class="line">    00 00 00 00             # 保留</span><br><span class="line">    01 00 00 00 00 00 00 00 # 当前LBA</span><br><span class="line">    FF FF BF 03 00 00 00 00 # 备份LBA（另一个分区表头的位置）</span><br><span class="line">    22 00 00 00 00 00 00 00 # 第一个可用于分区的LBA</span><br><span class="line">    DE FF BF 03 00 00 00 00 # 最后一个可用于分区的LBA</span><br><span class="line">    3F EA ... 16个字节       # 硬盘GUID</span><br><span class="line">    02 00 00 00 00 00 00 00 # 分区表项目的起始LBA（在主分区表中是2）</span><br><span class="line">    80 00 00 00             # 分区表项数量</span><br><span class="line">    80 00 00 00             # 一个分区表项大小（通常是128）</span><br><span class="line">    DE 60 B0 FA             # 分区序列的CRC</span><br><span class="line">    00 00 ...               # 保留，剩余字节必须是0</span><br><span class="line">---- LBA2 ----</span><br><span class="line">0400 - 28 73 2A C1 # 以下128字节是一个分区表</span><br><span class="line">    28 73 ... 16个字节       # 分区类型GUID</span><br><span class="line">    81 20 ... 16个字节       # 分区GUID</span><br><span class="line">    00 08 00 00 00 00 00 00 # 起始LBA（小端序）</span><br><span class="line">    FF 27 03 00 00 00 00 00 # 末尾LBA</span><br><span class="line">    00 00 00 00 00 00 00 00 # 属性标签</span><br><span class="line">    45 00 ... 72个字节       # 分区名</span><br><span class="line">0480 - 16 E3 C9 E3 # 另一个分区表</span><br><span class="line">    ...</span><br><span class="line">0500 - A2 A0 D0 EB # 第三个分区表</span><br><span class="line">    ...</span><br><span class="line">    00 A8 03 00 00 00 00 00 # 起始LBA</span><br><span class="line">    27 17 AE 03 00 00 00 00 # 末尾LBA</span><br><span class="line">    00 00 00 00 00 00 00 00 # 属性标签</span><br><span class="line">    42 00 61 00 73 00 69 00 # 分区名，Basic data partition</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">07500000 - EB 52 90 4E # NTFS</span><br></pre></td></tr></table></div></figure>
+<p>从分区表头可以找到分区表项的起始 LBA ，然后在 LBA2 中就可以读到第一个分区的起始位置和结束位置了。在这个磁盘中，第一个 GPT 分区并不是 NTFS 分区（一般都不是），第三个分区名为 Basic data partition 的分区才是。根据起始 LBA 就可以计算出 NTFS 分区的起始地址为 0x3A800 * 512 = 0x7500000 。</p>
+
+        <h2 id="三-分区引导扇区-主文件表和元文件"   >
+          <a href="#三-分区引导扇区-主文件表和元文件" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#三-分区引导扇区-主文件表和元文件"></a> 三、分区引导扇区、主文件表和元文件</h2>
+      
+<p>分区引导扇区是 NTFS 的第一个扇区，包含了一条 JMP 指令、NTFS 标识符、本 NTFS 文件系统的基本信息和启动指令。</p>
+<p>下面是一个 NTFS 分区引导扇区：</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">07500000 - EB 52 90 4E # 分区引导扇区</span><br><span class="line">    00 03 | EB 52 90                # JMP指令</span><br><span class="line">    03 08 | 4E 54 46 53 20 20 20 20 # NTFS</span><br><span class="line">    0B 02 | 00 02                   # 每扇区字节数</span><br><span class="line">    0D 01 | 08                      # 每簇扇区数</span><br><span class="line">    0E 02 | 00 00                   # 保留扇区数</span><br><span class="line">    10 03 | 00 00 00                # 未使用</span><br><span class="line">    13 02 | 00 00                   # NTFS未使用</span><br><span class="line">    15 01 | F8                      # 介质描述符（参考文件未说明详细信息）</span><br><span class="line">    16 02 | 00 00                   # 未使用</span><br><span class="line">    18 02 | 3F 00                   # 每磁道扇区数簇号</span><br><span class="line">    1C 04 | 00 A8 03 00             # 隐藏扇区数，参考文件未说明详细信息，但是恰好为NTFS起始地址</span><br><span class="line">    20 04 | 00 00 00 00             # NTFS未使用</span><br><span class="line">    24 04 | 80 00 80 00             # NTFS未使用</span><br><span class="line">    28 08 | 27 6F AA 03 00 00 00 00 # 分区总扇区数</span><br><span class="line">    30 08 | 00 00 0C 00 00 00 00 00 # $MFT簇号，实际地址为0xc0000*512*8+0x7500000</span><br><span class="line">    38 08 | 02 00 00 00 00 00 00 00 # $MFT备份所在簇号</span><br><span class="line">    40 01 | F6                      # 文件记录段包含的字节数</span><br><span class="line">                                    # 如果是负数就是2的-VALUE次幂，例如F6=-10表示2^10</span><br><span class="line">    41 03 | 00 00 00                # NTFS未使用</span><br><span class="line">    44 01 | 01                      # 所有缓冲簇数，算法和文件记录段相同</span><br><span class="line">    45 03 | 00 00 00                # NTFS 未使用</span><br><span class="line">    48 08 | F9 3A 72 B0 59 72 B0 1A # 卷序列数</span><br><span class="line">    50 04 | 00 00 00 00             # 校验和，参考文件未说明算法</span><br><span class="line">    54 426| FA 33 ...               # 启动指令码</span><br><span class="line">    1FE 2 | 55 AA   </span><br></pre></td></tr></table></div></figure>
+<p>这里边有很多有用的信息。第一个信息和 NTFS 中的特有概念“簇”有关。</p>
+
+        <h3 id="簇"   >
+          <a href="#簇" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#簇"></a> 簇</h3>
+      
+<p>和磁盘将扇区作为存取单元一样，为了使系统运行更高效，NTFS 有自己的存取单元，叫做“簇”。一簇通常由若干个扇区组成，每簇扇区数可以直接从分区引导扇区读出。家用个人电脑的簇大小往往是 8 个扇区，这时 NTFS 的存储单元大小就是 8 * 512 = 4096 字节，这就是传说中的 4k 扇区。</p>
+<p>簇的存在产生了两个名字很相似的概念：文件的分配大小和实际大小。如果你创建一个只有 1 个字符的 txt 文档，然后查看它的大小，那么你会惊喜地发现这个 txt 的大小为 4Kb 。因为存储的最小单元是 4k 字节，所以不到 4k 的部分只能空置了。这时我们就说这个 txt 的分配大小是 4Kb ，但实际大小只有 1b 。这样做虽然浪费了一定的空间，但好处是大块的存取会更高效，因此 4k 扇区是一个权衡之后的选择。</p>
+<p>与簇相关的概念还有 LCN（Logical Cluster Number ，逻辑簇号）和 VCN（Virtual Cluster Number ，虚拟簇号）。它们分别表示在整个卷中的簇号和在文件内部的簇号。VCN 在磁盘上不一定是连续的，它们可以被映射到任意 LCN 上。</p>
+<p>获取了簇大小之后，我们的关注点来到第二个信息：MFT 的簇号。根据这个簇号就可以定位 MFT ，也就是主文件表的地址。</p>
+
+        <h3 id="主文件表"   >
+          <a href="#主文件表" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#主文件表"></a> 主文件表</h3>
+      
+<p>MFT（Master File Table ，主文件表）自身也是一个文件，它储存了文件系统中所有文件的属性。想要访问一个文件的内容，就要先找到文件在主文件表中的位置，然后再定位到储存这个文件数据的地方。</p>
+<p>MFT 中的表项被称为文件记录，每个文件可能占用一个或者多个文件记录。每条记录的大小都相同，大小规定在分区引导扇区中，并且记录在磁盘上连续、紧凑而且有序地排列。例如之前的分区引导扇区表示一个文件记录大小为 1024 字节，那么 0xC7500000 - 0xC7500400 就是第一条文件记录，而 0xC7500400 - 0xC7500800 就是第二条。如果知道了一个文件在 MFT 中的标号，那么就可以通过计算定位文件记录的位置。MFT 作为一个文件，它的文件记录也包含在 MFT 表中，并且总是在第 1 个（标号为 0）。MFT 起始地址开始的两个扇区就是 MFT 的文件记录。</p>
+
+        <h3 id="元文件"   >
+          <a href="#元文件" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#元文件"></a> 元文件</h3>
+      
+<p>事实上，包括 MFT 在内，主文件表中的前 16 个文件通常是固定的，这些文件全部都以“$”开头，并且大多不对文件系统的客户端可见（根目录除外）。它们是用于定义和组织文件系统的特殊文件，被称为元文件。所以 MFT 在文件系统中的名字其实是“$MFT”。</p>
+<p>元文件虽然有 16 个，但是如果只是读取 NTFS 系统中的某个文件的话，它们大多是没有用的。需要关注的只有编号为 0 的“$MFT”和编号为 5 的根目录“$Root”。</p>
+
+        <h2 id="四-文件记录"   >
+          <a href="#四-文件记录" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#四-文件记录"></a> 四、文件记录</h2>
+      
+<p>要进一步解析 MFT 和根目录，就要详细了解 NTFS 储存文件数据的方式。</p>
+
+        <h3 id="文件头"   >
+          <a href="#文件头" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#文件头"></a> 文件头</h3>
+      
+<p>NTFS 中的文件记录由一个文件头和若干条文件属性组成。文件头记录的信息很有限，文件名、文件大小等重要的属性还是要从文件属性条目中获取。但是为了方便读者自己实践，这里还是以 MFT 为例给出文件头的结构：</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">C7500000 - 46 49 4C 45 # FILE，但是$MFT</span><br><span class="line">    文件头：</span><br><span class="line">    00 04 | 46 49 4C 45             # FILE</span><br><span class="line">    04 02 | 30 00                   # 更新序列号的偏移</span><br><span class="line">    06 02 | 03 00                   # 更新序列号的大小与数组，包括第一字节</span><br><span class="line">    08 08 | 4C 8C 93 0C 00 00 00 00 # 日志文件序列号</span><br><span class="line">    10 02 | 01 00                   # 序列号</span><br><span class="line">    12 02 | 01 00                   # 硬链接数，即有多少个目录指向该文件</span><br><span class="line">    14 02 | 38 00                   # 第一个属性的偏移地址</span><br><span class="line">    16 02 | 01 00                   # FLAG，00H表示被删除，01H表示正使用</span><br><span class="line">                                    # 02H表示目录被删除，03H表示目录正使用</span><br><span class="line">    18 04 | B0 01 00 00             # 文件的实际长度</span><br><span class="line">    1C 04 | 00 04 00 00             # 文件的分配长度</span><br><span class="line">    20 08 | 00 00 00 00 00 00 00 00 # 基本文件记录中的文件索引号</span><br><span class="line">    28 02 | 07 00                   # 下一属性ID，当新增属性时将该值分配给新属性并自增</span><br><span class="line">    2A 02 | 00 00                   # 边界，可能是不用了</span><br><span class="line">    2C 04 | 00 00 00 00             # 文件记录参考，XP使用，2000就不用了</span><br><span class="line">    30 02 | 52 00                   # 更新序列号</span><br><span class="line">    32 04 | 00 00 00 00             # 更新数组</span><br></pre></td></tr></table></div></figure>
+<p>其中更新序列号与一个扇区最后的 2 个字节有关。NTFS 所有记录型的数据都是 512 字节对齐的，并在每 512 字节的末尾 2 字节写入一个校验值，以确保所有数据都被正确写入到磁盘中。但如果最后两字节也要记录数据，要记录的数据就写在更新数组中，而原来的末尾 2 字节仍然记录序列号。这里一个文件记录包含 2 个扇区，所以更新数组长度为 4 ，要分别记录两个扇区的末 2 个字节，而更新序列号的两字节会同时出现在第 1 和第 2 扇区末尾。但同时也可以看到更新数组为 0 ，说明没有往最后 2 字节写入数据，不用替换序列号。</p>
+<p>其余我们主要关心两条：0x14 开始的两个字节，表示第一个属性的偏移地址；以及 0x16 开始的两个字节，表示这个文件是否是目录以及是否被删除。根据第一个属性的偏移地址就可以定位到第一条属性。文件属性也是相邻排列的，要想遍历每一个属性，就要根据当前属性的偏移和长度计算出下一个属性的偏移。属性的偏移地址一定是 8 对齐的，如果长度不是 8 的整数倍就在最后补 0 。补 0 的部分也会算在属性长度内。</p>
+
+        <h3 id="文件属性"   >
+          <a href="#文件属性" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#文件属性"></a> 文件属性</h3>
+      
+<p>一条文件属性又由属性头和属性体组成。不难理解，属性头记录文件属性的重要信息，包括属性类型、属性名、属性长度、属性体开始的偏移、以及是否为常驻属性等。什么叫常驻属性呢？有些类型的文件属性（如文件数据，子文件夹列表）内容太大，没法直接放在 MFT 里，因此需要链接到其他空间储存，这种就叫做非常驻属性，而将属性内容完全放在文件属性里的属性就叫做常驻属性。常驻属性和非常驻属性的文件头结构是不一样的，这里一定要注意。</p>
+<p>下面是一个常驻属性的属性头结构：</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">00 04 | 10 00 00 00             # 属性类型</span><br><span class="line">04 04 | 60 00 00 00             # 包含属性类型和属性体在内的长度</span><br><span class="line">08 01 | 00                      # 是否为常驻属性，0是常驻，1是非常驻</span><br><span class="line">09 01 | 00                      # 属性名长度，0表示没有属性名</span><br><span class="line">0A 02 | 18 00                   # 属性名的开始偏移</span><br><span class="line">0C 02 | 00 00                   # 压缩、加密、稀疏标志，0001H是压缩，4000H是加密，8000H是稀疏</span><br><span class="line">0E 02 | 00 00                   # 属性ID</span><br><span class="line">10 04 | 48 00 00 00             # 属性体长度</span><br><span class="line">14 02 | 18 00                   # 属性体开始的偏移</span><br><span class="line">16 01 | 00                      # 索引标志</span><br><span class="line">17 01 | 00                      # 无意义</span><br><span class="line">18 ..                           # 属性体或属性名</span><br></pre></td></tr></table></div></figure>
+<p>下面是一个非常驻属性的属性头结构：</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">非常驻属性的属性头和常驻属性不一样</span><br><span class="line">00 04 | 80 00 00 00             # 属性类型</span><br><span class="line">04 04 | 48 00 00 00             # 包含属性类型和属性体在内的长度</span><br><span class="line">08 01 | 01                      # 是否为常驻属性，0是常驻，1是非常驻</span><br><span class="line">09 01 | 00                      # 属性名长度，0表示没有属性名，Unicode编码，一个字符占两字节</span><br><span class="line">0A 02 | 40 00                   # 属性名的开始偏移</span><br><span class="line">0C 02 | 00 00                   # 压缩、加密、稀疏标志，0001H是压缩，4000H是加密，8000H是稀疏</span><br><span class="line">0E 02 | 06 00                   # 属性ID</span><br><span class="line">10 08 | 00 00 00 00 00 00 00 00 # 属性体的起始虚拟簇号（VCN）</span><br><span class="line">18 08 | 7F 6B 00 00 00 00 00 00 # 属性体的结束虚拟簇号（下面的Run List不是真正的属性体）</span><br><span class="line">20 02 | 40 00                   # Run List信息的偏移地址</span><br><span class="line">22 02 | 00 00                   # 压缩单位大小，2^value簇，为0表示不压缩</span><br><span class="line">24 04 | 00 00 00 00             # 无意义</span><br><span class="line">28 08 | 00 00 D8 06 00 00 00 00 # 属性体的分配大小</span><br><span class="line">30 08 | 00 00 D8 06 00 00 00 00 # 属性体的实际大小</span><br><span class="line">38 08 | 00 00 D8 06 00 00 00 00 # 属性体的初始大小</span><br><span class="line">40 ..                           # 属性名或属性的Run List信息，记录了属性体开始的簇号、簇数等信息</span><br></pre></td></tr></table></div></figure>
+<p>实践中务必注意区分常驻属性和非常驻属性的文件头。</p>
+<p>文件属性的种类标志着文件属性的意义，也决定着文件属性的结构。下表是常见的文件属性及其意义：</p>
+<p>（参考自罗文华《电子物证技术基础》）</p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>属性类型</th>
+<th>属性名</th>
+<th>属性描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10 00 00 00</td>
+<td>$STANDARD_INFORMATION</td>
+<td>标准信息，包括创建时间、是否只读等基本属性</td>
+</tr>
+<tr>
+<td>20 00 00 00</td>
+<td>$ATTRIBUTE_LIST</td>
+<td>属性列表，当一个文件需要使用多个 MFT 文件记录时表示该文件的属性列表</td>
+</tr>
+<tr>
+<td>30 00 00 00</td>
+<td>$SFILE_NAME</td>
+<td>文件名</td>
+</tr>
+<tr>
+<td>40 00 00 00</td>
+<td>$VOLUME_VERSION</td>
+<td>在早期的 NTFS v1.2 中为卷版本</td>
+</tr>
+<tr>
+<td>50 00 00 00</td>
+<td>$SECURITY_DESCRIPTOR</td>
+<td>安全描述符，Windows 2000 已将安全描述符放在 $Secure 元文件中</td>
+</tr>
+<tr>
+<td>60 00 00 00</td>
+<td>$VOLUME_NAME</td>
+<td>卷名，仅存在于 $Volume 元文件中</td>
+</tr>
+<tr>
+<td>70 00 00 00</td>
+<td>$VOLUME_INFORMATION</td>
+<td>卷信息，仅存在于 $Volume 元文件中</td>
+</tr>
+<tr>
+<td>80 00 00 00</td>
+<td>$DATA</td>
+<td>文件数据</td>
+</tr>
+<tr>
+<td>90 00 00 00</td>
+<td>$INDEX_ROOT</td>
+<td>索引根</td>
+</tr>
+<tr>
+<td>A0 00 00 00</td>
+<td>$INDEX_ALLOCATION</td>
+<td>索引分配</td>
+</tr>
+<tr>
+<td>B0 00 00 00</td>
+<td>$BITMAP</td>
+<td>位图</td>
+</tr>
+<tr>
+<td>C0 00 00 00</td>
+<td>$SYMBOLIC_LINK</td>
+<td>符号链接</td>
+</tr>
+<tr>
+<td>D0 00 00 00</td>
+<td>$EA_INFORMATION</td>
+<td>扩充属性信息，现已使用不多</td>
+</tr>
+<tr>
+<td>E0 00 00 00</td>
+<td>$EA</td>
+<td>扩充属性，现已使用不多</td>
+</tr>
+<tr>
+<td>F0 00 00 00</td>
+<td>$PROPERTY_SET</td>
+<td>早期的 NTFS v1.2 才有</td>
+</tr>
+<tr>
+<td>00 10 00 00</td>
+<td>$LOGGED_UTILITY_STREAM</td>
+<td>EFS 加密属性，主要存储 EFS 有关的加密信息，如解码密钥等</td>
+</tr>
+</tbody>
+</table></div>
+<p>此外还有很多其他属性，限于篇幅就不列了。这些属性中最常用的是 10H 、30H 、80H 、90H 和 A0H 属性，其他的功能也很强大，但是我们只读取一个文件的话就用不到了。下面重点分析这些最常用的属性。</p>
+
+        <h3 id="10h-属性"   >
+          <a href="#10h-属性" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#10h-属性"></a> 10H 属性</h3>
+      
+<p>下面是一个 10H 属性体：</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">10H属性体：</span><br><span class="line">00 08 | C8 3B 31 72 7E DE D7 01 # 文件创建时间</span><br><span class="line">08 08 | C8 3B 31 72 7E DE D7 01 # 文件最后修改时间</span><br><span class="line">10 08 | C8 3B 31 72 7E DE D7 01 # MFT修改时间</span><br><span class="line">18 08 | C8 3B 31 72 7E DE D7 01 # 文件最后访问时间</span><br><span class="line">20 04 | 06 00 00 00             # 传统文件属性</span><br><span class="line">24 04 | 00 00 00 00             # 最大版本数，0表示没有版本</span><br><span class="line">28 04 | 00 00 00 00             # 版本数，如果上面是0这里也是0</span><br><span class="line">2C 04 | 00 00 00 00             # 分类ID</span><br><span class="line">30 04 | 00 00 00 00             # 所有者ID，如果为0表示没有设置配额</span><br><span class="line">34 04 | 00 01 00 00             # 安全ID</span><br><span class="line">38 04 | 00 00 00 00 00 00 00 00 # 配额占用情况，是文件所有流占用的总字节数，为0表示没有使用磁盘配额</span><br><span class="line">40 08 | 00 00 00 00 00 00 00 00 # 更新序列号（USN），为0表示没有USN日志</span><br></pre></td></tr></table></div></figure>
+<p>10H 属性比较简单，我们主要关心时间属性和传统文件属性。</p>
+<ol>
+<li>时间属性</li>
+</ol>
+<p>首先来看时间属性，四个时间的含义和名称相同，不用再解读了。但特别要强调的是，这里的时间<strong>不是</strong> Unix 时间戳，而是 Windows 特有的 FILETIME 时间戳。FILETIME 与 Unix 时间戳的区别在于 FILETIME 是从 1601-01-01 00:00:00 开始的，这个时间比 Unix 时间戳早了 11644473600 秒；同时 FILETIME 的计时单位是 100 纳秒，而不是 1 秒。因此其实可以通过一个很简单的公式来把 FILETIME 转化成 Unix 时间戳：</p>
+<figure class="highlight c++"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unix_time = (<span class="type">unsigned</span>)(windows_time / <span class="number">10000000</span> - <span class="number">11644473600LL</span>)</span><br></pre></td></tr></table></div></figure>
+<p>得到 Unix 时间戳后再用各种语言的内置库转化为需要的时间格式就很容易了。</p>
+<ol start="2">
+<li>传统文件属性</li>
+</ol>
+<p>传统文件属性用来标志只读、临时、压缩、加密等特种文件。如果传统文件属性的某一个二进制位为 1 ，则表示这个文件属于对应的特殊类型。文件属性的含义表格如下：</p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>标志</th>
+<th>二进制位</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x0001</td>
+<td>0000 0000 0000 0001</td>
+<td>只读</td>
+</tr>
+<tr>
+<td>0x0002</td>
+<td>0000 0000 0000 0010</td>
+<td>隐含</td>
+</tr>
+<tr>
+<td>0x0004</td>
+<td>0000 0000 0000 0100</td>
+<td>系统</td>
+</tr>
+<tr>
+<td>0x0020</td>
+<td>0000 0000 0010 0000</td>
+<td>存档</td>
+</tr>
+<tr>
+<td>0x0040</td>
+<td>0000 0000 0100 0000</td>
+<td>设备</td>
+</tr>
+<tr>
+<td>0x0080</td>
+<td>0000 0000 1000 0000</td>
+<td>常规</td>
+</tr>
+<tr>
+<td>0x0100</td>
+<td>0000 0001 0000 0000</td>
+<td>临时</td>
+</tr>
+<tr>
+<td>0x0200</td>
+<td>0000 0010 0000 0000</td>
+<td>稀疏文件</td>
+</tr>
+<tr>
+<td>0x0400</td>
+<td>0000 0100 0000 0000</td>
+<td>重解析点</td>
+</tr>
+<tr>
+<td>0x0800</td>
+<td>0000 1000 0000 0000</td>
+<td>压缩</td>
+</tr>
+<tr>
+<td>0x1000</td>
+<td>0001 0000 0000 0000</td>
+<td>脱机</td>
+</tr>
+<tr>
+<td>0x2000</td>
+<td>0010 0000 0000 0000</td>
+<td>未编入索引</td>
+</tr>
+<tr>
+<td>0x4000</td>
+<td>0100 0000 0000 0000</td>
+<td>加密</td>
+</tr>
+</tbody>
+</table></div>
+<p>可以看到 10H 属性的例子中，传统文件属性为 0x0006（06 00 ，注意是小端序），表明这是一个系统文件，而且是隐含的。这与 MFT 文件的定位相符。</p>
+
+        <h3 id="30h-属性"   >
+          <a href="#30h-属性" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#30h-属性"></a> 30H 属性</h3>
+      
+<p>30H 主要用来储存文件名，但其实也包含时间属性、传统文件属性和文件大小。下面是一个 30H 属性体：</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">30H属性体：</span><br><span class="line">00 08 | 05 00 00 00 00 00 05 00 # 父目录的文件参考号，前6字节为文件记录号，后2字节为序列号</span><br><span class="line">08 08 | C8 3B 31 72 7E DE D7 01 # 文件创建时间</span><br><span class="line">10 08 | C8 3B 31 72 7E DE D7 01 # 文件最后修改时间</span><br><span class="line">18 08 | C8 3B 31 72 7E DE D7 01 # MFT修改时间</span><br><span class="line">20 08 | C8 3B 31 72 7E DE D7 01 # 文件最后访问时间</span><br><span class="line">28 08 | 00 40 00 00 00 00 00 00 # 文件分配大小</span><br><span class="line">30 08 | 00 40 00 00 00 00 00 00 # 文件实际大小</span><br><span class="line">38 04 | 06 00 00 00             # 标志，如目录、压缩、隐藏</span><br><span class="line">3C 04 | 00 00 00 00             # EAs（扩展属性）和Reparse（重解析点）使用</span><br><span class="line">40 01 | 04                      # 文件名长度</span><br><span class="line">41 01 | 03                      # 文件名命名空间，根据观察，疑似1为长名，2为短名，</span><br><span class="line">                                # 3表示不分长短名，1、2共同出现，3单独出现，0也会出现，意义不明</span><br><span class="line">42 ..                           # 文件名</span><br></pre></td></tr></table></div></figure>
+<p>这里需要注意的是文件名的命名空间。在早期的 FAT 系统（MS-DOS 使用）中是不支持长文件名的，采用的是 8.3 命名规范。NTFS 支持使用 Unicode 字符表示的长文件名，但为了兼容，会生成一个备用的 MS-DOS 文件名。这个备用文件名是根据原文件名以一定规则转换得到。所以一个文件可能会有多个文件名属性。此外，还会存在一个文件拥有两个文件记录，文件名分别为长文件名和短文件名的情况。因此如果你想要写一个 NTFS 解析系统，这一点是需要特别处理的。</p>
+
+        <h3 id="80h-属性"   >
+          <a href="#80h-属性" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#80h-属性"></a> 80H 属性</h3>
+      
+<p>80H 是一个非常驻属性。前面说过，非常驻属性的属性体并不在文件记录内，而是链接到了其他地方，记录这个链接的机制就叫做 Run List 。一个 Run List 条目记录一条 Data Run（数据运行）信息，所谓 Data Run 就是指异地存储的数据。条目由 3 部分组成：长度、占用簇数和起始簇号。</p>
+<ol>
+<li>长度</li>
+</ol>
+<p>Run List 将占用簇数和起始簇号压缩在一个字节内来表示一条 Run List 的长度。其中高 4 位为起始簇号的长度 N ，低 4 位为占用簇数的长度 L ，这个 Run List 条目的总长度就是 1 + L + N 。</p>
+<ol start="2">
+<li>占用簇数</li>
+</ol>
+<p>长度之后有 L 个字节表示对应 Data Run 占用的簇数。</p>
+<ol start="3">
+<li>起始簇号</li>
+</ol>
+<p>起始簇号的机制比较复杂。第一个 Data Run 的这个值就是它的起始簇号，但是从第二个开始就变为相对于上一个 Data Run 的变化量，并且这个变化量是有符号值。从另一个角度也可以理解为所有的这个值都表示相对于上一个的变化量，但一开始这个基数是 0 ，那么第一个 Data Run 的起始簇号是 0 + 这个值。</p>
+<p>下面是一个 80H 的 Run List：</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">00 01 | 32                      # 高4位为起始簇号长度为N,低4位为占用簇数长度为L</span><br><span class="line">01  L | 80 6B                   # 占用簇数</span><br><span class="line">L+1 N | 00 00 0C                # 起始簇号，从第二个数据流开始这里是相对上一个Data Run</span><br><span class="line">                                # 的起始簇号，值为有符号值</span><br></pre></td></tr></table></div></figure>
+<p>这个 80H 是属于 MFT 的，可以看到起始簇号 0xC0000 就是 MFT 的起始簇号。</p>
+<p>严格意义上来讲，Run List 并不算属性体，实际上的属性体应该是 Run List 指向的 Data Run 。只不过 80H 的属性体没有任何结构，直接就是储存的文件数据，但某些属性是可能在 Data Run 里还有结构的。</p>
+
+        <h2 id="五-索引"   >
+          <a href="#五-索引" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#五-索引"></a> 五、索引</h2>
+      
+<p>90H 和 A0H 属性都是为索引服务。索引的结构比较复杂，所以需要新的一节来专门解释。</p>
+<p>NTFS 的索引结构是 B+ 树，我们读取文件的话不需要考虑 B+ 树的节点限制，只需要进行树结构遍历就可以了，不过 B+ 树的结构还是需要有所了解。简单来说，B+ 树由若干个单链表组成，每个链表中的节点都是一个树节点。每个树节点最多有一个子节点，而这个子节点一定是另一个链表的链头。用图像来表示就是这样：</p>
+<p>
+        <img   class="lazyload lazyload-gif"
+          src="/images/loading.svg" data-src="/images/220418/22041801.png"  alt="" />
+      </p>
+<p>因此每个节点都可能有一个下一个节点和一个子节点。NTFS 中的索引是有序的，如果是大索引，那么一个节点的文件名一定大于子节点的文件名，通过这个特点可以加速文件查找。例如当前节点文件名为 3.txt ，下一节点为 6.txt ，而查找的目标是 4.txt 的话，就可以跳过 3.txt 去遍历 6.txt 的子节点。</p>
+
+        <h3 id="90h-属性"   >
+          <a href="#90h-属性" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#90h-属性"></a> 90H 属性</h3>
+      
+<p>90H 是索引根，是一个常驻属性。这里的索引指的是对文件的索引，一般是文件夹会有这个属性，用来表示文件夹内的文件。索引根只是一个提供索引基本信息的东西，经常和 A0H 索引项属性一起出现，但 90H 里也会储存一些索引项，有时干脆没有 A0H 属性。</p>
+<p>下面是一个 90H 属性体：</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">90H属性体：</span><br><span class="line">索引根</span><br><span class="line">00 04 | 30 00 00 00             # 属性类型</span><br><span class="line">04 04 | 01 00 00 00             # 校对规则</span><br><span class="line">08 04 | 00 10 00 00             # 每个索引缓冲区的分配大小（字节）</span><br><span class="line">0C 01 | 01                      # 每个索引缓冲区的簇数</span><br><span class="line">0D 03 | 00 00 00                # 无意义</span><br><span class="line">10 04 | 10 00 00 00             # 第一个索引项的偏移，相对与这里计算</span><br><span class="line">14 04 | 28 00 00 00             # 索引项总大小，相对与这里计算</span><br><span class="line">18 04 | 28 00 00 00             # 索引项的分配大小</span><br><span class="line">1C 01 | 01                      # 标志，为0时为小索引，为01时为大索引</span><br><span class="line">1D 03 | 00 00 00                # 无意义</span><br><span class="line">索引项</span><br><span class="line">00 08 | 00 00 00 00 00 00 00 00 # 该文件的MFT参考号</span><br><span class="line">08 02 | 18 00                   # 索引项大小（相对索引项开始）</span><br><span class="line">0A 02 | 00 00                   # 文件名属性体大小</span><br><span class="line">0C 02 | 03 00                   # 索引标志，为1表示这个索引项包含子节点</span><br><span class="line">                                # 为2表示是最后一个项，3 可能表示同时都是</span><br><span class="line">0E 02 | 00 00                   # 无意义</span><br><span class="line">10 08 | 00 00 00 00 00 00 00 00 # 后边没了，因为索引项大小就到这，说明这就是个空的90H</span><br></pre></td></tr></table></div></figure>
+<p>90H 属性体由 2 部分组成：索引根和索引项。</p>
+<ol>
+<li>索引根</li>
+</ol>
+<p>索引根是 B+ 数的入口，包含了 B+ 数的一些基本信息，如是小索引还是大索引，以及最关键的索引项的入口。</p>
+<ol start="2">
+<li>索引项</li>
+</ol>
+<p>每个索引项都是一个 B+ 树节点。虽然按照 B+ 树的定义，非叶子节点不应该有数据，但是在 NTFS 里好像每一个索引项都表示一个文件。</p>
+<p>下面是一个装有非空索引项的 90H 属性体：</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">索引根：</span><br><span class="line">00 04 | 30 00 00 00             # 属性类型</span><br><span class="line">04 04 | 01 00 00 00             # 校对规则</span><br><span class="line">08 04 | 00 10 00 00             # 每个索引缓冲区的分配大小（字节）</span><br><span class="line">0C 01 | 01                      # 每个索引缓冲区的簇数</span><br><span class="line">0D 03 | 00 00 00                # 无意义</span><br><span class="line">10 04 | 10 00 00 00             # 第一个索引项的偏移，相对与这里计算</span><br><span class="line">14 04 | 28 02 00 00             # 索引项的总大小，相对与这里计算</span><br><span class="line">18 04 | 28 02 00 00             # 索引项的分配大小</span><br><span class="line">1C 01 | 00                      # 标志，当00时为小索引，当01时为大索引（这是啥）</span><br><span class="line">1D 03 | 00 00 00                # 无意义</span><br><span class="line">索引项：</span><br><span class="line">00 08 | 44 00 00 00 00 00 01 00 # MFT参考号</span><br><span class="line">08 02 | 78 00                   # 索引项的大小（相对于索引项开始）</span><br><span class="line">0A 02 | 62 00                   # 文件名属性大小</span><br><span class="line">0C 02 | 00 00                   # 索引标志，为1表示包含子节点，为2表示最后一个项</span><br><span class="line">0E 02 | 00 00                   # 无意义</span><br><span class="line">10 08 | 43 00 00 00 00 00 01 00 # 父目录的MFT参考号</span><br><span class="line">18 08 | 7B ..                   # 文件创建时间</span><br><span class="line">20 08 | 64 ..                   # 文件最后修改时间</span><br><span class="line">28 08 | D4 ..                   # 文件记录最后修改时间</span><br><span class="line">30 08 | CA ..                   # 文件最后访问时间</span><br><span class="line">38 08 | 00 00 00 00 00 00 19 00 # 文件的分配大小（？？）</span><br><span class="line">40 08 | 00 00 00 00 00 00 00 00 # 文件的实际大小</span><br><span class="line">48 08 | 00 00 00 10 00 00 00 00 # 文件标志</span><br><span class="line">50 01 | 10                      # 文件名长度</span><br><span class="line">51 01 | 01                      # 文件命名空间</span><br><span class="line">52 2F | 6D 00 69 00 ..          # 文件名</span><br><span class="line">...   |                         # 填充到8整除</span><br><span class="line">...   |                         # 子节点索引所在VCN（有子节点时才有）</span><br></pre></td></tr></table></div></figure>
+<p>这里的索引项就表示了一个文件，记录了文件的 MFT 参考号、时间属性、文件名等。而且例子中的索引项索引标志为 0 ，表示没有子节点，并且还有下一项。如果索引项有子节点，那么就要用子节点索引所在 VCN 找到子节点（VCN 是虚拟簇号，在前面有过介绍）。如果有下一项，那么下一项应该紧挨在这一项之后。</p>
+
+        <h3 id="a0h-属性"   >
+          <a href="#a0h-属性" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#a0h-属性"></a> A0H 属性</h3>
+      
+<p>A0H 是索引分配，是一个非常驻属性，在文件记录中只保存了 Run List ，所以我们直接分析 Data Run 储存的属性体。</p>
+<p>下面是一个 A0H 的属性体：</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">C7524000 # 49 4E 44 58 # INDEX</span><br><span class="line">    索引头</span><br><span class="line">    00 04 | 49 4E 44 58             # INDX</span><br><span class="line">    04 02 | 28 00                   # 更新序列号的偏移</span><br><span class="line">    06 02 | 09 00                   # 更新序列号与更新数组以字为单位的大小S</span><br><span class="line">    08 08 | 6F FD BC 0B 00 00 00 00 # 日志文件序列号</span><br><span class="line">    10 08 | 00 00 00 00 00 00 00 00 # 本索引缓冲区在索引分配中的VCN</span><br><span class="line">    18 04 | 40 00 00 00             # 索引项偏移，注意相对与这里计算</span><br><span class="line">    1C 04 | 10 0D 00 00             # 索引项大小，相对与这里计算</span><br><span class="line">    20 04 | E8 0F 00 00             # 索引项分配大小，相对与这里计算</span><br><span class="line">    24 01 | 00                      # 如果不是叶节点为1，表示还有叶节点</span><br><span class="line">    25 03 | 00 00 00                # 无意义</span><br><span class="line">    28 02 | 30 00                   # 更新序列</span><br><span class="line">    2A 2S-2 05 00 05 00 D7 01 67 .. # 更新序列数组 </span><br><span class="line">    索引项1</span><br><span class="line">    00 08 | 04 00 00 00 00 00 04 00 # 文件的MFT参考号，前6字节为文件记录号，后2字节为序列号</span><br><span class="line">    08 02 | 68 00                   # 索引项大小, 包含填充到8的长度</span><br><span class="line">    0A 02 | 52 00                   # 文件名属性体大小</span><br><span class="line">    0C 02 | 00 00                   # 索引标志</span><br><span class="line">    0E 02 | 00 00                   # 填充</span><br><span class="line">    10 08 | 05 00 00 00 00 00 05 00 # 父目录的MFT参考号</span><br><span class="line">    18 08 | 00 00 00 00 00 00 00 00 # 文件创建时间</span><br><span class="line">    20 08 | 00 00 00 00 00 00 00 00 # 最后修改时间</span><br><span class="line">    28 08 | 00 00 00 00 00 00 00 00 # 文件记录最后修改时间</span><br><span class="line">    30 08 | 00 00 00 00 00 00 00 00 # 最后访问时间</span><br><span class="line">    38 08 | 00 00 00 00 00 00 00 00 # 文件分配大小（应该因为是目录所以是0）</span><br><span class="line">    40 08 | 00 00 00 00 00 00 00 00 # 文件实际大小</span><br><span class="line">    48 08 | 00 00 00 00 00 00 00 00 # 文件标志</span><br><span class="line">    50 01 | 08                      # 文件名长度L</span><br><span class="line">    51 01 | 03                      # 文件名命名空间</span><br><span class="line">    52 2L | 24 00 41 00 ..          # 文件名</span><br><span class="line">    ...   |                         # 填充到8字节</span><br><span class="line">    ...   |                         # 子节点索引所在VCN（有子节点时才有）</span><br></pre></td></tr></table></div></figure>
+<p>可以看到 A0H 的属性体和 90H 差别不大，也是由索引头和索引项组成，只不过是内容较大，所以进行了异地储存。此外还多了“INDEX”标识、更新序列号等信息。</p>
+
+        <h2 id="六-总结"   >
+          <a href="#六-总结" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#六-总结"></a> 六、总结</h2>
+      
+<p>至此，你已经可以自己拿着一个 NTFS 镜像去恢复某个文件了。恢复的过程大概遵循如下步骤：</p>
+<ol>
+<li>
+<p>在 MBR 查看分区表，并找到 NTFS 分区起始位置</p>
+</li>
+<li>
+<p>读取簇大小等属性</p>
+</li>
+<li>
+<p>根据 MFT 簇号计算 MFT 的起始位置并记录</p>
+</li>
+<li>
+<p>根据根目录的 MFT 号（一定为 5 ）计算根目录的文件记录的起始位置</p>
+</li>
+<li>
+<p>解析文件头，找到第一个属性的入口</p>
+</li>
+<li>
+<p>遍历每一个属性，找到 90H 属性和 10H 属性</p>
+</li>
+<li>
+<p>遍历 B+ 树结构，找到下一层文件的 MFT 号</p>
+</li>
+<li>
+<p>根据 MFT 号计算此文件记录的起始位置</p>
+</li>
+<li>
+<p>重复 5 - 8 ，直到找到要还原的文件</p>
+</li>
+<li>
+<p>解析 80H 属性，还原出文件数据</p>
+</li>
+</ol>
+<p>上述步骤虽然多，但是只要能从头到尾做一遍，基本就能将 NTFS 的基本结构掌握在心中了。除此之外还有一些细节问题，如某些扇区可能需要替换更新序列号、某些属性计算偏移时要考虑属性名长度等，这就留待读者朋友在实践中总结了。</p>
+</div><footer class="post-footer"><div class="post-ending ending"><div class="ending__text">------ 本文结束，感谢您的阅读 ------</div></div><div class="post-copyright copyright"><div class="copyright-author"><span class="copyright-author__name">本文作者: </span><span class="copyright-author__value"><a href="http://cdcq.github.io">cdcq</a></span></div><div class="copyright-link"><span class="copyright-link__name">本文链接: </span><span class="copyright-link__value"><a href="http://cdcq.github.io/2022/04/18/20220418a/">http://cdcq.github.io/2022/04/18/20220418a/</a></span></div><div class="copyright-notice"><span class="copyright-notice__name">版权声明: </span><span class="copyright-notice__value">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" rel="external nofollow" target="_blank">BY-NC-SA</a> 许可协议。转载请注明出处！</span></div></div><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://cdcq.github.io/tags/%E7%94%B5%E5%AD%90%E6%95%B0%E6%8D%AE%E5%8F%96%E8%AF%81/">电子数据取证</a></span><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://cdcq.github.io/tags/%E6%95%99%E7%A8%8B/">教程</a></span></div><nav class="post-paginator paginator"><div class="paginator-prev"><a class="paginator-prev__link" href="/2022/05/25/20220525a/"><span class="paginator-prev__icon"><i class="fas fa-angle-left"></i></span><span class="paginator-prev__text">西电校赛2022H题——朝歌夜雪</span></a></div><div class="paginator-next"><a class="paginator-next__link" href="/2022/04/17/20220417a/"><span class="paginator-prev__text">cdcq的密码学教程三——同态加密的Paillier算法</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div><div class="comments" id="comments"><div id="gitalk-container"></div></div></div><div class="sidebar-wrap" id="sidebar-wrap"><aside class="sidebar" id="sidebar"><div class="sidebar-nav"><span class="sidebar-nav-toc current">文章目录</span><span class="sidebar-nav-ov">站点概览</span></div><section class="sidebar-toc"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80-%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">
+           一、前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C-%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86"><span class="toc-number">2.</span> <span class="toc-text">
+           二、前置知识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%87%E5%8C%BA"><span class="toc-number">2.1.</span> <span class="toc-text">
+           扇区</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E5%BC%95%E5%AF%BC%E6%89%87%E5%8C%BA"><span class="toc-number">2.2.</span> <span class="toc-text">
+           主引导扇区</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89-%E5%88%86%E5%8C%BA%E5%BC%95%E5%AF%BC%E6%89%87%E5%8C%BA-%E4%B8%BB%E6%96%87%E4%BB%B6%E8%A1%A8%E5%92%8C%E5%85%83%E6%96%87%E4%BB%B6"><span class="toc-number">3.</span> <span class="toc-text">
+           三、分区引导扇区、主文件表和元文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B0%87"><span class="toc-number">3.1.</span> <span class="toc-text">
+           簇</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E6%96%87%E4%BB%B6%E8%A1%A8"><span class="toc-number">3.2.</span> <span class="toc-text">
+           主文件表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%83%E6%96%87%E4%BB%B6"><span class="toc-number">3.3.</span> <span class="toc-text">
+           元文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B-%E6%96%87%E4%BB%B6%E8%AE%B0%E5%BD%95"><span class="toc-number">4.</span> <span class="toc-text">
+           四、文件记录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E5%A4%B4"><span class="toc-number">4.1.</span> <span class="toc-text">
+           文件头</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E5%B1%9E%E6%80%A7"><span class="toc-number">4.2.</span> <span class="toc-text">
+           文件属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10h-%E5%B1%9E%E6%80%A7"><span class="toc-number">4.3.</span> <span class="toc-text">
+           10H 属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#30h-%E5%B1%9E%E6%80%A7"><span class="toc-number">4.4.</span> <span class="toc-text">
+           30H 属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#80h-%E5%B1%9E%E6%80%A7"><span class="toc-number">4.5.</span> <span class="toc-text">
+           80H 属性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94-%E7%B4%A2%E5%BC%95"><span class="toc-number">5.</span> <span class="toc-text">
+           五、索引</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#90h-%E5%B1%9E%E6%80%A7"><span class="toc-number">5.1.</span> <span class="toc-text">
+           90H 属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#a0h-%E5%B1%9E%E6%80%A7"><span class="toc-number">5.2.</span> <span class="toc-text">
+           A0H 属性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD-%E6%80%BB%E7%BB%93"><span class="toc-number">6.</span> <span class="toc-text">
+           六、总结</span></a></li></ol></section><!-- ov = overview--><section class="sidebar-ov hide"><div class="sidebar-ov-author"><div class="sidebar-ov-author__avatar"><img class="sidebar-ov-author__avatar_img" src="/images/cdcq.png" alt="avatar"></div><p class="sidebar-ov-author__text">宠辱不惊，闲看庭前花开花落；去留无意，漫随天外云卷云舒。</p></div><div class="sidebar-ov-social"><a class="sidebar-ov-social-item" href="https://github.com/cdcq" target="_blank" rel="noopener"><span class="sidebar-ov-social-item__icon"><i class="fab fa-github"></i></span><span class="sidebar-ov-social-item__text">github</span></a></div><div class="sidebar-ov-feed"><span class="sidebar-ov-feed-email"><a class="sidebar-ov-feed-email__link" href="http://eepurl.com/hwUpkL" target="_blank" rel="noopener"><span class="sidebar-ov-feed-email__icon"><i class="fas fa-envelope"></i></span><span>Email 订阅</span></a></span><span class="sidebar-ov-feed-rss"><a class="sidebar-ov-feed-rss__link" href="/atom.xml" target="_blank" rel="noopener"><span class="sidebar-ov-feed-rss__icon"><i class="fas fa-rss"></i></span><span>RSS 订阅</span></a></span></div><div class="sidebar-ov-state"><a class="sidebar-ov-state-item sidebar-ov-state-item--posts" href="/archives/"><div class="sidebar-ov-state-item__count">32</div><div class="sidebar-ov-state-item__name">归档</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--categories" href="/categories/"><div class="sidebar-ov-state-item__count">17</div><div class="sidebar-ov-state-item__name">分类</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--tags" href="/tags/"><div class="sidebar-ov-state-item__count">23</div><div class="sidebar-ov-state-item__name">标签</div></a></div></section><div class="sidebar-reading"><div class="sidebar-reading-info"><span class="sidebar-reading-info__text">你已阅读了 </span><span class="sidebar-reading-info__num">0</span><span class="sidebar-reading-info__perc">%</span></div><div class="sidebar-reading-line"></div></div></aside></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2023</span><span class="footer__icon"><i class="fab fa-github"></i></span><span>cdcq</span></div><div><span>由 <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a> 强力驱动</span><span> v5.4.0</span><span class="footer__devider">|</span><span>主题 - <a href="https://github.com/liuyib/hexo-theme-stun/" title="Stun" target="_blank" rel="noopener">Stun</a></span><span> v2.6.2</span></div><div class="busuanzi"><span class="busuanzi-siteuv"><span class="busuanzi-siteuv__icon"><i class="fas fa-user"></i></span><span class="busuanzi-siteuv__info">访问人数</span><span class="busuanzi-siteuv__value" id="busuanzi_value_site_uv"></span></span><span class="busuanzi-sitepv"><span class="busuanzi-siteuv__icon"><i class="fas fa-eye"></i></span><span class="busuanzi-siteuv__info">浏览总量</span><span class="busuanzi-siteuv__value" id="busuanzi_value_site_pv"></span></span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div><div class="back2top" id="back2top"><span class="back2top__icon"><i class="fas fa-rocket"></i></span></div></div><div class="search-mask"></div><div class="search-popup"><span class="search-close"></span><div class="search-input"><input placeholder="搜索文章（支持多关键词，请用空格分隔）"></div><div class="search-results"></div></div><script src="https://cdn.jsdelivr.net/npm/jquery@v3.4.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/npm/ribbon.js@latest/dist/ribbon.min.js" size="120" alpha="0.6" zIndex="-1"></script><script src="https://cdn.jsdelivr.net/npm/lazyload@2.0.0-rc.2/lazyload.min.js"></script><script>function initSearch() {
+  var isXML = true;
+  var search_path = 'search.xml';
+
+  if (!search_path) {
+    search_path = 'search.xml';
+  } else if (/json$/i.test(search_path)) {
+    isXML = false;
+  }
+
+  var path = '/' + search_path;
+  $.ajax({
+    url: path,
+    dataType: isXML ? 'xml' : 'json',
+    async: true,
+    success: function (res) {
+      var datas = isXML ? $('entry', res).map(function () {
+        // 将 XML 转为 JSON
+        return {
+          title: $('title', this).text(),
+          content: $('content', this).text(),
+          url: $('url', this).text()
+        };
+      }).get() : res;
+      var $input = $('.search-input input');
+      var $result = $('.search-results');
+      // 搜索对象（标题、内容）的权重，影响显示顺序
+      var WEIGHT = { title: 100, content: 1 };
+      var searchPost = function () {
+        var searchText = $input.val().toLowerCase().trim();
+        // 根据空白字符分隔关键字
+        var keywords = searchText.split(/[\s]+/);
+        // 搜索结果
+        var matchPosts = [];
+
+        // 有多个关键字时，将原文字整个保存下来
+        if (keywords.length > 1) {
+          keywords.push(searchText);
+        }
+        // 防止未输入字符时搜索
+        if (searchText.length > 0) {
+          datas.forEach(function (data) {
+            var isMatch  = false;
+            // 没有标题的文章使用预设的 i18n 变量代替
+            var title = (data.title && data.title.trim()) || '[ 文章无标题 ]';
+            var titleLower = title && title.toLowerCase();
+            // 删除 HTML 标签 和 所有空白字符
+            var content = data.content && data.content.replace(/<[^>]+>/g, '');
+            var contentLower = content && content.toLowerCase();
+            // 删除重复的 /
+            var postURL = data.url && decodeURI(data.url).replace(/\/{2,}/g, '/');
+            // 标题中匹配到的关键词
+            var titleHitSlice = [];
+            // 内容中匹配到的关键词
+            var contentHitSlice = [];
+
+            keywords.forEach(function (keyword) {
+              /**
+              * 获取匹配的关键词的索引
+              * @param {String} keyword 要匹配的关键字
+              * @param {String} text 原文字
+              * @param {Boolean} caseSensitive 是否区分大小写
+              * @param {Number} weight 匹配对象的权重。权重大的优先显示
+              * @return {Array}
+              */
+              function getIndexByword (word, text, caseSensitive, weight) {
+                if (!word || !text) {
+                  return [];
+                };
+
+                var startIndex = 0; // 每次匹配的开始索引
+                var index = -1;     // 匹配到的索引值
+                var result = [];    // 匹配结果
+
+                if (!caseSensitive) {
+                  word = word.toLowerCase();
+                  text = text.toLowerCase();
+                }
+
+                while((index = text.indexOf(word, startIndex)) !== -1) {
+                  var hasMatch = false;
+                  // 索引位置相同的关键词，保留长度较长的
+                  titleHitSlice.forEach(function (hit) {
+                    if (hit.index === index && hit.word.length < word.length) {
+                      hit.word = word;
+                      hasMatch = true;
+                    }
+                  });
+                  startIndex = index + word.length;
+                  !hasMatch && result.push({ index: index, word: word, weight: weight });
+                }
+                return result;
+              }
+              titleHitSlice = titleHitSlice.concat(getIndexByword(keyword, titleLower, false, WEIGHT.title));
+              contentHitSlice = contentHitSlice.concat(getIndexByword(keyword, contentLower, false, WEIGHT.content));
+            });
+
+            var hitTitle = titleHitSlice.length;
+            var hitContent = contentHitSlice.length;
+
+            if (hitTitle > 0 || hitContent > 0) {
+              isMatch = true;
+            }
+            if (isMatch) {
+              ;[titleHitSlice, contentHitSlice].forEach(function (hit) {
+                // 按照匹配文字的索引的递增顺序排序
+                hit.sort(function (left, right) {
+                  return left.index - right.index;
+                });
+              });
+              /**
+              * 给文本中匹配到的关键词添加标记，从而进行高亮显示
+              * @param {String} text 原文本
+              * @param {Array} hitSlice 匹配项的索引信息
+              * @param {Number} start 开始索引
+              * @param {Number} end 结束索引
+              * @return {String}
+              */
+              function highlightKeyword (text, hitSlice, start, end) {
+                if (!text || !hitSlice || !hitSlice.length) {
+                  return;
+                }
+
+                var result = '';
+                var startIndex = start;
+                var endIndex = end;
+                hitSlice.forEach(function (hit) {
+                  if (hit.index < startIndex) {
+                    return;
+                  }
+
+                  var hitWordEnd = hit.index + hit.word.length;
+                  result += text.slice(startIndex, hit.index);
+                  result += '<b>' + text.slice(hit.index, hitWordEnd) + '</b>';
+                  startIndex = hitWordEnd;
+                });
+                result += text.slice(startIndex, endIndex);
+                return result;
+              }
+
+              var postData = {};
+              // 文章总的搜索权重
+              var postWeight = titleHitSlice.length * WEIGHT.title + contentHitSlice.length * WEIGHT.content;
+              // 标记匹配关键词后的标题
+              var postTitle = highlightKeyword(title, titleHitSlice, 0, title.length) || title;
+              // 标记匹配关键词后的内容
+              var postContent;
+              // 显示内容的长度
+              var SHOW_WORD_LENGTH = 200;
+              // 命中关键词前的字符显示长度
+              var SHOW_WORD_FRONT_LENGTH = 20;
+              var SHOW_WORD_END_LENGTH = SHOW_WORD_LENGTH - SHOW_WORD_FRONT_LENGTH;
+
+              // 截取匹配的第一个字符，前后共 200 个字符来显示
+              if (contentHitSlice.length > 0) {
+                var firstIndex = contentHitSlice[0].index;
+                var start = firstIndex > SHOW_WORD_FRONT_LENGTH ? firstIndex - SHOW_WORD_FRONT_LENGTH : 0;
+                var end = firstIndex + SHOW_WORD_END_LENGTH;
+                postContent = highlightKeyword(content, contentHitSlice, start, end);
+              } else { // 未匹配到内容，直接截取前 200 个字符来显示
+                postContent = content.slice(0, SHOW_WORD_LENGTH);
+              }
+              postData.title = postTitle;
+              postData.content = postContent;
+              postData.url = postURL;
+              postData.weight = postWeight;
+              matchPosts.push(postData);
+            }
+          });
+        }
+
+        var resultInnerHtml = '';
+        if (matchPosts.length) {
+          // 按权重递增的顺序排序，使权重大的优先显示
+          matchPosts.sort(function (left, right) {
+            return right.weight - left.weight;
+          });
+          resultInnerHtml += '<ul>';
+          matchPosts.forEach(function (post) {
+            resultInnerHtml += '<li><a class="search-results-title" href="' + post.url + '">';
+            resultInnerHtml += post.title;
+            resultInnerHtml += '</a><div class="search-results-content">';
+            resultInnerHtml += post.content;
+            resultInnerHtml += '</div></li>';
+          });
+          resultInnerHtml += '</ul>';
+        } else {
+          resultInnerHtml += '<div class="search-results-none"><i class="far fa-meh"></i></div>';
+        }
+        $result.html(resultInnerHtml);
+      };
+      $input.on('input', searchPost);
+      $input.on('keyup', function (e) {
+        if (e.keyCode === Stun.utils.codeToKeyCode('Enter')) {
+          searchPost();
+        }
+      });
+    }
+  });
+}
+
+function closeSearch () {
+  $('body').css({ overflow: 'auto' });
+  $('.search-popup').css({ display: 'none' });
+  $('.search-mask').css({ display: 'none' });
+}
+
+window.addEventListener('DOMContentLoaded', function () {
+  Stun.utils.pjaxReloadLocalSearch = function () {
+    $('.header-nav-search').on('click', function (e) {
+      e.stopPropagation();
+      $('body').css('overflow', 'hidden');
+      $('.search-popup')
+        .velocity('stop')
+        .velocity('transition.expandIn', {
+          duration: 300,
+          complete: function () {
+            $('.search-popup input').focus();
+          }
+        });
+      $('.search-mask')
+        .velocity('stop')
+        .velocity('transition.fadeIn', {
+          duration: 300
+        });
+
+      initSearch();
+    });
+    $('.search-mask, .search-close').on('click', function () {
+      closeSearch();
+    });
+    $(document).on('keydown', function (e) {
+      // Escape <=> 27
+      if (e.keyCode === Stun.utils.codeToKeyCode('Escape')) {
+        closeSearch();
+      }
+    });
+  };
+
+  Stun.utils.pjaxReloadLocalSearch();
+}, false);
+
+function safeOpenUrl(url) {
+  var newTab = window.open();
+  newTab.opener = null;
+  newTab.location = url;
+}
+
+function extSearch(engine) {
+  var engines = {
+    google: 'https://www.google.com/search?q=',
+    bing: 'https://cn.bing.com/search?q=',
+    baidu: 'https://www.baidu.com/s?ie=UTF-8&wd=',
+  };
+  var host = window.location.host;
+  var query = $('.search-input input').val().toLowerCase().trim();
+  var uri = engines[engine] + query + ' site:' + host;
+
+  if (query) {
+    safeOpenUrl(uri);
+  } else {
+    Stun.utils.popAlert('warning', '请输入字符');
+  }
+}
+
+var assistSearchList = window.CONFIG.assistSearch;
+
+if (Array.isArray(assistSearchList)) {
+  assistSearchList.forEach(function (name) {
+    document.querySelector('.search-btns-item--' + name).addEventListener('click', function () {
+      extSearch(name);
+    }, false);
+  });
+}</script><link href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" rel="stylesheet" type="text/css"><link href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/copy-tex.css" rel="stylesheet" type="text/css"><script src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/copy-tex.min.js"></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/js-md5@latest/src/md5.min.js"></script><script>function loadGitalk () {
+  if (!document.getElementById('gitalk-container')) {
+    return;
+  }
+
+  var gitalk = new Gitalk({
+    id: md5(window.location.pathname.slice(1)),
+    clientID: '9ff99dad5f63f968ff89',
+    clientSecret: 'a78075e602518c2df48827e684fd5c38e1b0e472',
+    repo: 'cdcq.github.io',
+    owner: 'cdcq',
+    admin: ['cdcq'],
+    distractionFreeMode: 'false',
+    language: 'zh-CN'
+  });
+  gitalk.render('gitalk-container');
+}
+
+if (false) {
+  loadGitalk();
+} else {
+  window.addEventListener('DOMContentLoaded', loadGitalk, false);
+}</script><script src="/js/utils.js?v=2.6.2"></script><script src="/js/stun-boot.js?v=2.6.2"></script><script src="/js/scroll.js?v=2.6.2"></script><script src="/js/header.js?v=2.6.2"></script><script src="/js/sidebar.js?v=2.6.2"></script><script type="application/json" src="/search.xml"></script></body></html>

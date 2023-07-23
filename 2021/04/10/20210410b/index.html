@@ -1,0 +1,562 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="format-detection" content="telephone=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><link rel="icon" href="/images/cdcq.png?v=2.6.2" type="image/png" sizes="16x16"><link rel="icon" href="/images/cdcq.png?v=2.6.2" type="image/png" sizes="32x32"><meta name="description" content="如何提高智商？？？这是个永恒的话题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="错误集合">
+<meta property="og:url" content="http://cdcq.github.io/2021/04/10/20210410b/index.html">
+<meta property="og:site_name" content="cdcq">
+<meta property="og:description" content="如何提高智商？？？这是个永恒的话题">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-04-10T14:47:05.000Z">
+<meta property="article:modified_time" content="2023-04-30T13:54:55.232Z">
+<meta property="article:author" content="cdcq">
+<meta property="article:tag" content="总结与集合">
+<meta property="article:tag" content="ACM">
+<meta name="twitter:card" content="summary"><title>错误集合 | cdcq</title><link ref="canonical" href="http://cdcq.github.io/2021/04/10/20210410b/"><link rel="alternate" href="/atom.xml" type="application/atom+xml"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.12.1/css/all.min.css" type="text/css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.css" type="text/css"><link rel="stylesheet" href="/css/index.css?v=2.6.2"><script>var Stun = window.Stun || {};
+var CONFIG = {
+  root: '/',
+  algolia: undefined,
+  assistSearch: undefined,
+  fontIcon: {"prompt":{"success":"fas fa-check-circle","info":"fas fa-arrow-circle-right","warning":"fas fa-exclamation-circle","error":"fas fa-times-circle"},"copyBtn":"fas fa-copy"},
+  sidebar: {"offsetTop":"20px","tocMaxDepth":6},
+  header: {"enable":true,"showOnPost":false,"scrollDownIcon":true},
+  postWidget: {"endText":true},
+  nightMode: {"enable":true},
+  back2top: {"enable":true},
+  codeblock: {"style":"default","highlight":"light","wordWrap":true},
+  reward: false,
+  fancybox: false,
+  zoomImage: {"gapAside":"20px"},
+  galleryWaterfall: undefined,
+  lazyload: true,
+  pjax: undefined,
+  externalLink: {"icon":{"enable":true,"name":"fas fa-external-link-alt"}},
+  shortcuts: undefined,
+  prompt: {"copyButton":"复制","copySuccess":"复制成功","copyError":"复制失败"},
+  sourcePath: {"js":"js","css":"css","images":"images"},
+};
+
+window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 5.4.0"></head><body><div class="container" id="container"><header class="header" id="header"><div class="header-inner header-inner--height header-inner--bgcolor"><nav class="header-nav header-nav--sticky"><div class="header-nav-inner"><div class="header-nav-menubtn"><i class="fas fa-bars"></i></div><div class="header-nav-menu"><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/"><span class="header-nav-menu-item__icon"><i class="fas fa-home"></i></span><span class="header-nav-menu-item__text">首页</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/archives/"><span class="header-nav-menu-item__icon"><i class="fas fa-folder-open"></i></span><span class="header-nav-menu-item__text">归档</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/categories/"><span class="header-nav-menu-item__icon"><i class="fas fa-layer-group"></i></span><span class="header-nav-menu-item__text">分类</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/tags/"><span class="header-nav-menu-item__icon"><i class="fas fa-tags"></i></span><span class="header-nav-menu-item__text">标签</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/friends/"><span class="header-nav-menu-item__icon"><i class="fas fa-user-plus"></i></span><span class="header-nav-menu-item__text">Friends</span></a></div></div><div class="header-nav-search"><span class="header-nav-search__icon"><i class="fas fa-search"></i></span><span class="header-nav-search__text">搜索</span></div><div class="header-nav-mode"><div class="mode"><div class="mode-track"><span class="mode-track-moon"></span><span class="mode-track-sun"></span></div><div class="mode-thumb"></div></div></div></div></nav></div></header><main class="main" id="main"><div class="main-inner"><div class="content-wrap" id="content-wrap"><div class="content" id="content"><!-- Just used to judge whether it is an article page--><div id="is-post"></div><div class="post"><header class="post-header"><h1 class="post-title">错误集合</h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2021-04-10</span></span><span class="post-meta-item post-meta-item--updatetime"><span class="post-meta-item__icon"><i class="far fa-calendar-check"></i></span><span class="post-meta-item__info">更新于</span><span class="post-meta-item__value">2023-04-30</span></span><span class="post-meta-item post-meta-item--visitors"><span class="post-meta-item__icon"><i class="fas fa-eye"></i></span><span class="post-meta-item__info">阅读次数</span><span class="post-meta-item__value" id="busuanzi_value_page_pv"></span></span></div></header><div class="post-body"><ul>
+<li>
+<p>线段树四倍</p>
+</li>
+<li>
+<p>马拉车开两倍！（需要插入通配符）</p>
+</li>
+<li>
+<p>有时候随手写个暴力很快，不用对拍，就在原代码里写，然后把输出比较，这样有时会让效率提高很多</p>
+</li>
+<li>
+<p>二分图建网络图，如果 s = n + m + 1 那么判断右边的点就不能用 i &gt; n</p>
+</li>
+</ul>
+<p>而是要 i &gt; n &amp;&amp; i &lt; s</p>
+<ul>
+<li>
+<p>BSGS 注意，p 是质数不一定能直接上 BSGS，因为 底数可能是 p 的倍数</p>
+</li>
+<li>
+<p>BSGS 注意了，两边的东西要先对 p 取下模</p>
+</li>
+</ul>
+<p>忘记对右边的数取模，可能导致找不到解，忘记左边取模可能忽略底数是 p 的倍数的情况</p>
+<ul>
+<li>
+<p>同下条，如果可能的话尽量测测答案为负数的数据</p>
+</li>
+<li>
+<p>注意数组初值不一定是 0 ，常见于要取 max 的 ans 数组或 ans 变量</p>
+</li>
+</ul>
+<p>如果真实答案是负数，那给变量赋 0 初值就死了</p>
+<ul>
+<li>写封装的时候一定注意了，一般的写法不会用 oop（数组模拟），那么下面这种写法就很笨比</li>
+</ul>
+<figure class="highlight c++"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">cpn</span><span class="params">(cmnd x,cmnd y)</span></span>&#123; x.l=y.l; x.r=y.r; x.v=y.v;&#125;</span><br></pre></td></tr></table></div></figure>
+<p>这种写法只对形参进行了修改！影响不到外边</p>
+<p>需要用索引找到真数据的位置改</p>
+<figure class="highlight c++"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">cpn</span><span class="params">(<span class="type">int</span> x,<span class="type">int</span> y)</span></span>&#123;</span><br><span class="line">nds[x].l=nds[y].l; nds[x].r=nds[y].r; nds[x].v=nds[y].v;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></div></figure>
+<ul>
+<li>如果你企图用这种方法：<code>printf(&quot;%d.%d&quot;,ans/100,ans%100)</code>来以小数形式输出百分数，那就要自闭啦</li>
+</ul>
+<p>问：102/100 = ? 102%100 = ? 102.0/100 = ?</p>
+<ul>
+<li>张帆（主席）犯过的 DP 错误：dp[0][0][0] = 0 ，其他都是 -inf</li>
+</ul>
+<p>第一维表示直到第 i 个物品，dp[i][j][k] 从 dp[i-1][j-1][k-1] 和 dp[i-1][j-1][k-3] 转移</p>
+<p>那么这样就会导致从第 2 个物品开始，(0, 0) 的状态不为 0 ，相当于强制后面的物品上前面的车，不能从头选</p>
+<p>应该给所有物品的 (0, 0) 都初始化为 0</p>
+<p>为什么背包没有这个问题呢？</p>
+<p>因为背包所有物品都 dp 在一个维度上呀，dp 的时候一定要注意了</p>
+<ul>
+<li>网格图的点数要特别注意</li>
+</ul>
+<p>你以为是 n 个点？其实是 n*m 个点哒</p>
+<p>这个在开数组，判断爆 int 等步骤都容易出错</p>
+<ul>
+<li>一个 dfs 时复杂度分析的错误</li>
+</ul>
+<p>我枚举 n^2 条边，对于每条边都花 O(n) 检查是不是树边，如果这条边是树边（ n - 1 条），那么就枚举选或不选并搜下一层</p>
+<p>这样其实并不是 2^n*n 的复杂度，因为 n^2 的枚举和 2^n 的枚举是相互交织的，n^2 并不能被 2^n 覆盖掉，总复杂度差不多还是 2<sup>n*n</sup>3 量级</p>
+<p>所以还是别偷懒用 O(n) 检查，先用并查集预处理出树边再搜吧。。</p>
+<ul>
+<li>当通过返回 oo 来控制二分中贪心的无解的时候</li>
+</ul>
+<p>注意是否会爆 int（很可能会的，所以还是慎用 oo 啊，用了尽量开 longlong 吧）</p>
+<ul>
+<li>当你在递归或 dfs 中使用队列或栈的时候一定要小心了！</li>
+</ul>
+<p>大多数时候所有的递归层数共用一个队列，如果不退栈将导致可怕的后果</p>
+<p>事实上，即使保证每个点至多只入队一次，如果多层递归同时用一个栈的话，还是必须记录当前层的栈顶位置</p>
+<p>所以还是尽量避免多层共用吧，先预处理好，再一次性做完队列该做的事</p>
+<ul>
+<li>用阶乘预处理法求组合数时一定注意，注意检查阶乘预处理的范围</li>
+</ul>
+<p>尤其是方格里求组合数，阶乘的范围是 [0, n + m - 2] 而不是 [0, n] ，也不是 [1, n] ，注意求 0</p>
+<p>如果只预处理了 0 到 n 交上去必 WA ，肯定又要怀疑结论错了，损失惨重，切记啊！</p>
+<p>这个易错点再次说明手测最大数据的必要性</p>
+<ul>
+<li>id 函数初始化和统计答案的时一定注意！</li>
+</ul>
+<p>统计的不是 1 到 n ，而是 0 到 id(n, m)（或者别的范围）</p>
+<p>id 函数易错点，只要出现 id 函数必须列入常规项检查</p>
+<ul>
+<li>
+<p>多维 id 函数解压易错点：如果 id = x*m*4 + y*4 + z ，那么 y = id/4%m 而不是 id%m/4 ，注意顺序</p>
+</li>
+<li>
+<p>使用 id 函数压缩状态的时候一定注意最小的 id 是不是 0 ，以及会不会造成影响！！！</p>
+</li>
+</ul>
+<p>例如 last[t] != 0 这个判断，就可能在 id 为 0 的状态前停下，而不是一条链的开始停下</p>
+<p>再比如初始化的时候，容易写成从 1 到 idmax 初始化，把 0 漏掉导致错误</p>
+<ul>
+<li>一个剪枝中的贪心错误</li>
+</ul>
+<p>左边有 n 个点有一个权值 a[i] ，如果这个点总共被选 d 次，那么它对答案的贡献就是 a[i]^d</p>
+<p>右边有 n 个点，每个点必须选择一个左边的和这个点连边的点</p>
+<p>思考：启发式函数中，右边的某个点对答案的启发式函数 h 是否能设置为与它连边的所有点中 a 最小的那个？</p>
+<p>不是！</p>
+<p>当 a = 1 时，如果某个点第二次被选，它对答案的贡献是 0 而不是至少是 1</p>
+<ul>
+<li>
+<p>如果数据不是特别大，不妨先写一个简单的启发式函数，TLE 了再尝试优化，不要一上来就写很复杂的启发式函数，导致出错就得不偿失了</p>
+</li>
+<li>
+<p>读入字符串时字符串的数组一定不要开成刚好的大小！！！</p>
+</li>
+</ul>
+<p>因为 scanf 读入后会添一个 \0 ，如果数组大小刚好就越界了。。。</p>
+<p>所以还是不要省什么内存了，每个数组都尽量有点冗余，免得又有什么奇奇怪怪的错误</p>
+<ul>
+<li>判断所有的点能否到达 T 一定不能偷懒原图 bfs 或 dfs ！</li>
+</ul>
+<p>必须建反向图</p>
+<ul>
+<li>倍增求 lca 的注意事项：</li>
+</ul>
+<p>注意如果要同时维护区间和，区间最大值的时候（边权），最后 x 和 y 往 lca 合并的时候，由于二者是从同深度共同向上，因此两人的（边的）值都要考虑到</p>
+<figure class="highlight c++"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(x==y)  <span class="keyword">return</span> mx;</span><br><span class="line"></span><br><span class="line"><span class="keyword">else</span> <span class="keyword">return</span> <span class="built_in">max</span>(mx,<span class="built_in">max</span>(mst[y][<span class="number">0</span>],mst[x][<span class="number">0</span>]));</span><br></pre></td></tr></table></div></figure>
+<ul>
+<li>计算几何检查点：跟 eps 比的东西有没有 abs</li>
+</ul>
+<p>没加 abs 就傻 b 了哈哈</p>
+<ul>
+<li>不管是手写堆还是用 STL ，比较优先级的时候切忌进行 dis[x] &gt; dis[y]（dis是全局数组）这种比较</li>
+</ul>
+<p>因为 dis 会变，堆里用来比较的 dis 不是入堆时的值，修改 dis 会导致堆结构混乱</p>
+<ul>
+<li>大坑！python 读入字符串的时候会去掉 \n 但是不会去掉 \r ，所以 python 尽量避免全句匹配！</li>
+</ul>
+<p>\r 一般是 windows 在记事本里手打数据造成的</p>
+<ul>
+<li>幂取模的时候注意指数要对 (mod - 1) 取模</li>
+</ul>
+<p>检查的时候注意有些计算函数可能放在指数上面，函数里的模数也要是 mod - 1</p>
+<ul>
+<li>一种错误的 DP 写法：</li>
+</ul>
+<figure class="highlight c++"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//f[x][0]=max(f[x][0],f[x][0]+f[e[i].y][1]);</span></span><br><span class="line"><span class="comment">//f[x][0]=max(f[x][0],f[x][0]+f[e[i].y][0]);</span></span><br><span class="line"><span class="comment">//注意不能这么写，会重复增加答案</span></span><br><span class="line">f[x][<span class="number">0</span>]=<span class="built_in">max</span>(f[x][<span class="number">0</span>],f[x][<span class="number">0</span>]+<span class="built_in">max</span>(f[e[i].y][<span class="number">1</span>],f[e[i].y][<span class="number">0</span>]));</span><br></pre></td></tr></table></div></figure>
+<ul>
+<li>
+<p>dfs 回溯的时候注意检查完全，不要光盯着循环里看，函数开头 dfn 类似的可能也要回溯</p>
+</li>
+<li>
+<p>给你一个区间的左端点和长度，范围 1e9 ，那么坐标的范围是 2e9 而不是 1e9 ，因为 1e9 + 1e9 = 2e9</p>
+</li>
+<li>
+<p>要求你统计字符串中出现的字符中出现的次数并升序输出，注意没出现的字符可是不输出的哦。。。</p>
+</li>
+<li>
+<p>10 点 40 的时候时针不在 10 上！涉及到钟表的几何问题可能掉坑</p>
+</li>
+<li>
+<p>如果把 2 位小数转整数，(long long)(b * 100) 不可取，b = 0.57 时得到 0.56 ，应该 + eps</p>
+</li>
+<li>
+<p>double 的有效位数大概到 16 位，一个 1e15 的整数乘一个两位小数，再转成 longlong 就可能丢精度了，应该给小数乘 100 再除回去</p>
+</li>
+<li>
+<p>double 强转 int 的时候注意可能要加括号，例如 (int)a*b ，如果 a 是整数 b 是浮点数，而想让 a*b 变成浮点数就傻了，应该 (int)(a*b)</p>
+</li>
+<li>
+<p>如果要输出整数部分，注意算清数据范围，有时候不能用 (int)a 而是 (long long)a</p>
+</li>
+<li>
+<p>两个值为 1e10 的 long long 相乘结果大于 0</p>
+</li>
+<li>
+<p>用 multiset 的时候，注意 erase 是删除所有相等元素，并返回删除元素的个数</p>
+</li>
+<li>
+<p>注意别把 2e5 的数组开成 1e5</p>
+</li>
+<li>
+<p>鸡兔同笼问题中，有 a 个头，b 只脚，判断数据是否可能的条件不是 2a &lt;= b &lt;= 4b，而是 b%2 == 0 &amp;&amp; 2a &lt;= b &lt;= 4b！</p>
+</li>
+<li>
+<p>强连通分量缩点 + 拓扑排序千万不能偷懒不缩点！！</p>
+</li>
+</ul>
+<p>不缩点而用标号代替的后果不仅是 WA（拓扑 DP 的最优值有滞后性），还会 RE（不缩点是假 dag ，还是有环的）</p>
+<ul>
+<li>
+<p>用余弦定理时注意判断是否构成三角型，3 中情况都必须判断到，很容易漏</p>
+</li>
+<li>
+<p>直角坐标转极坐标的时候注意 α 不是 arccos(Δx/l) ，arccos 的范围是 [0, pi] ，还需要判定 Δy</p>
+</li>
+<li>
+<p>长度为 0 的序列错位排序方案数是 1 不是 0</p>
+</li>
+<li>
+<p>如果对 dp 的 f 数组做前缀和，注意 f 的初始状态如果不为 0 ，那么前缀和中，对应一层的初值都不为 0</p>
+</li>
+<li>
+<p>有些 dp 使用滚动数组可以直接赋值，无需清空数组，但是注意有一些赋值不到的地方（比如 f[i][0] ）可能需要清空</p>
+</li>
+<li>
+<p>出现灵异错误时可以注意一下局部变量是不是没初值，尽管这个错误在初学者里很常见，但熟练者一旦出现实际更为棘手</p>
+</li>
+<li>
+<p>线段树区间赋值注意 delta 的空值是否能为 0 ，因为区间赋值很多时候都存在把区间赋值为 0 的情况，这时 delta 空值不能是 0</p>
+</li>
+<li>
+<p>检查数组大小时要注意某些值的范围可能变化，例如缩点 + 背包，那么包的容量可能就会增大</p>
+</li>
+<li>
+<p>SPFA（包括费用流）队列长度应该比点数多，因为可能重复进队</p>
+</li>
+<li>
+<p>用字符数组的时候不要把下标为 0 的当做长度，char 可以装数字但是只能装很小的数</p>
+</li>
+<li>
+<p>浮点数比较相等的时候，注意是 abs(a - b) &lt; eps，而不是 a - b &lt; eps</p>
+</li>
+<li>
+<p>有时候 sort 会巨慢，如果次数比较多就很难受</p>
+</li>
+</ul>
+<p>这时如果结构体排序，可以在比较函数前加 ‘&amp;’ ，即参数取地址，防止每次函数调用都把结构体复制一遍，可以跑得飞快</p>
+<p>当然也可以手写堆排序，难度不大</p>
+<ul>
+<li>如果 main 函数里 ans 没有初值，而 ans 相关的语句只有 ans = min(ans, …) 和 cout ，编译器是不会报错的（可能是把 min 那句当成赋值了）</li>
+</ul>
+<p>这个时候会一定概率输出正确答案，当 ans 初值随到比答案大的时候就正确，否则 WA 233</p>
+<ul>
+<li>用 printf 四舍五入时需要 + eps，防止丢精度</li>
+</ul>
+</div><footer class="post-footer"><div class="post-ending ending"><div class="ending__text">------ 本文结束，感谢您的阅读 ------</div></div><div class="post-copyright copyright"><div class="copyright-author"><span class="copyright-author__name">本文作者: </span><span class="copyright-author__value"><a href="http://cdcq.github.io">cdcq</a></span></div><div class="copyright-link"><span class="copyright-link__name">本文链接: </span><span class="copyright-link__value"><a href="http://cdcq.github.io/2021/04/10/20210410b/">http://cdcq.github.io/2021/04/10/20210410b/</a></span></div><div class="copyright-notice"><span class="copyright-notice__name">版权声明: </span><span class="copyright-notice__value">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" rel="external nofollow" target="_blank">BY-NC-SA</a> 许可协议。转载请注明出处！</span></div></div><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://cdcq.github.io/tags/%E6%80%BB%E7%BB%93%E4%B8%8E%E9%9B%86%E5%90%88/">总结与集合</a></span><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://cdcq.github.io/tags/ACM/">ACM</a></span></div><nav class="post-paginator paginator"><div class="paginator-prev"><a class="paginator-prev__link" href="/2021/04/10/20210410c/"><span class="paginator-prev__icon"><i class="fas fa-angle-left"></i></span><span class="paginator-prev__text">模板集合</span></a></div><div class="paginator-next"><a class="paginator-next__link" href="/2021/04/10/20210410d/"><span class="paginator-prev__text">关于我</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div><div class="comments" id="comments"><div id="gitalk-container"></div></div></div><div class="sidebar-wrap" id="sidebar-wrap"><aside class="sidebar" id="sidebar"><div class="sidebar-nav"><span class="sidebar-nav-toc current">文章目录</span><span class="sidebar-nav-ov">站点概览</span></div><section class="sidebar-toc"></section><!-- ov = overview--><section class="sidebar-ov hide"><div class="sidebar-ov-author"><div class="sidebar-ov-author__avatar"><img class="sidebar-ov-author__avatar_img" src="/images/cdcq.png" alt="avatar"></div><p class="sidebar-ov-author__text">宠辱不惊，闲看庭前花开花落；去留无意，漫随天外云卷云舒。</p></div><div class="sidebar-ov-social"><a class="sidebar-ov-social-item" href="https://github.com/cdcq" target="_blank" rel="noopener"><span class="sidebar-ov-social-item__icon"><i class="fab fa-github"></i></span><span class="sidebar-ov-social-item__text">github</span></a></div><div class="sidebar-ov-feed"><span class="sidebar-ov-feed-email"><a class="sidebar-ov-feed-email__link" href="http://eepurl.com/hwUpkL" target="_blank" rel="noopener"><span class="sidebar-ov-feed-email__icon"><i class="fas fa-envelope"></i></span><span>Email 订阅</span></a></span><span class="sidebar-ov-feed-rss"><a class="sidebar-ov-feed-rss__link" href="/atom.xml" target="_blank" rel="noopener"><span class="sidebar-ov-feed-rss__icon"><i class="fas fa-rss"></i></span><span>RSS 订阅</span></a></span></div><div class="sidebar-ov-state"><a class="sidebar-ov-state-item sidebar-ov-state-item--posts" href="/archives/"><div class="sidebar-ov-state-item__count">32</div><div class="sidebar-ov-state-item__name">归档</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--categories" href="/categories/"><div class="sidebar-ov-state-item__count">17</div><div class="sidebar-ov-state-item__name">分类</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--tags" href="/tags/"><div class="sidebar-ov-state-item__count">23</div><div class="sidebar-ov-state-item__name">标签</div></a></div></section><div class="sidebar-reading"><div class="sidebar-reading-info"><span class="sidebar-reading-info__text">你已阅读了 </span><span class="sidebar-reading-info__num">0</span><span class="sidebar-reading-info__perc">%</span></div><div class="sidebar-reading-line"></div></div></aside></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2023</span><span class="footer__icon"><i class="fab fa-github"></i></span><span>cdcq</span></div><div><span>由 <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a> 强力驱动</span><span> v5.4.0</span><span class="footer__devider">|</span><span>主题 - <a href="https://github.com/liuyib/hexo-theme-stun/" title="Stun" target="_blank" rel="noopener">Stun</a></span><span> v2.6.2</span></div><div class="busuanzi"><span class="busuanzi-siteuv"><span class="busuanzi-siteuv__icon"><i class="fas fa-user"></i></span><span class="busuanzi-siteuv__info">访问人数</span><span class="busuanzi-siteuv__value" id="busuanzi_value_site_uv"></span></span><span class="busuanzi-sitepv"><span class="busuanzi-siteuv__icon"><i class="fas fa-eye"></i></span><span class="busuanzi-siteuv__info">浏览总量</span><span class="busuanzi-siteuv__value" id="busuanzi_value_site_pv"></span></span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div><div class="back2top" id="back2top"><span class="back2top__icon"><i class="fas fa-rocket"></i></span></div></div><div class="search-mask"></div><div class="search-popup"><span class="search-close"></span><div class="search-input"><input placeholder="搜索文章（支持多关键词，请用空格分隔）"></div><div class="search-results"></div></div><script src="https://cdn.jsdelivr.net/npm/jquery@v3.4.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/npm/ribbon.js@latest/dist/ribbon.min.js" size="120" alpha="0.6" zIndex="-1"></script><script src="https://cdn.jsdelivr.net/npm/lazyload@2.0.0-rc.2/lazyload.min.js"></script><script>function initSearch() {
+  var isXML = true;
+  var search_path = 'search.xml';
+
+  if (!search_path) {
+    search_path = 'search.xml';
+  } else if (/json$/i.test(search_path)) {
+    isXML = false;
+  }
+
+  var path = '/' + search_path;
+  $.ajax({
+    url: path,
+    dataType: isXML ? 'xml' : 'json',
+    async: true,
+    success: function (res) {
+      var datas = isXML ? $('entry', res).map(function () {
+        // 将 XML 转为 JSON
+        return {
+          title: $('title', this).text(),
+          content: $('content', this).text(),
+          url: $('url', this).text()
+        };
+      }).get() : res;
+      var $input = $('.search-input input');
+      var $result = $('.search-results');
+      // 搜索对象（标题、内容）的权重，影响显示顺序
+      var WEIGHT = { title: 100, content: 1 };
+      var searchPost = function () {
+        var searchText = $input.val().toLowerCase().trim();
+        // 根据空白字符分隔关键字
+        var keywords = searchText.split(/[\s]+/);
+        // 搜索结果
+        var matchPosts = [];
+
+        // 有多个关键字时，将原文字整个保存下来
+        if (keywords.length > 1) {
+          keywords.push(searchText);
+        }
+        // 防止未输入字符时搜索
+        if (searchText.length > 0) {
+          datas.forEach(function (data) {
+            var isMatch  = false;
+            // 没有标题的文章使用预设的 i18n 变量代替
+            var title = (data.title && data.title.trim()) || '[ 文章无标题 ]';
+            var titleLower = title && title.toLowerCase();
+            // 删除 HTML 标签 和 所有空白字符
+            var content = data.content && data.content.replace(/<[^>]+>/g, '');
+            var contentLower = content && content.toLowerCase();
+            // 删除重复的 /
+            var postURL = data.url && decodeURI(data.url).replace(/\/{2,}/g, '/');
+            // 标题中匹配到的关键词
+            var titleHitSlice = [];
+            // 内容中匹配到的关键词
+            var contentHitSlice = [];
+
+            keywords.forEach(function (keyword) {
+              /**
+              * 获取匹配的关键词的索引
+              * @param {String} keyword 要匹配的关键字
+              * @param {String} text 原文字
+              * @param {Boolean} caseSensitive 是否区分大小写
+              * @param {Number} weight 匹配对象的权重。权重大的优先显示
+              * @return {Array}
+              */
+              function getIndexByword (word, text, caseSensitive, weight) {
+                if (!word || !text) {
+                  return [];
+                };
+
+                var startIndex = 0; // 每次匹配的开始索引
+                var index = -1;     // 匹配到的索引值
+                var result = [];    // 匹配结果
+
+                if (!caseSensitive) {
+                  word = word.toLowerCase();
+                  text = text.toLowerCase();
+                }
+
+                while((index = text.indexOf(word, startIndex)) !== -1) {
+                  var hasMatch = false;
+                  // 索引位置相同的关键词，保留长度较长的
+                  titleHitSlice.forEach(function (hit) {
+                    if (hit.index === index && hit.word.length < word.length) {
+                      hit.word = word;
+                      hasMatch = true;
+                    }
+                  });
+                  startIndex = index + word.length;
+                  !hasMatch && result.push({ index: index, word: word, weight: weight });
+                }
+                return result;
+              }
+              titleHitSlice = titleHitSlice.concat(getIndexByword(keyword, titleLower, false, WEIGHT.title));
+              contentHitSlice = contentHitSlice.concat(getIndexByword(keyword, contentLower, false, WEIGHT.content));
+            });
+
+            var hitTitle = titleHitSlice.length;
+            var hitContent = contentHitSlice.length;
+
+            if (hitTitle > 0 || hitContent > 0) {
+              isMatch = true;
+            }
+            if (isMatch) {
+              ;[titleHitSlice, contentHitSlice].forEach(function (hit) {
+                // 按照匹配文字的索引的递增顺序排序
+                hit.sort(function (left, right) {
+                  return left.index - right.index;
+                });
+              });
+              /**
+              * 给文本中匹配到的关键词添加标记，从而进行高亮显示
+              * @param {String} text 原文本
+              * @param {Array} hitSlice 匹配项的索引信息
+              * @param {Number} start 开始索引
+              * @param {Number} end 结束索引
+              * @return {String}
+              */
+              function highlightKeyword (text, hitSlice, start, end) {
+                if (!text || !hitSlice || !hitSlice.length) {
+                  return;
+                }
+
+                var result = '';
+                var startIndex = start;
+                var endIndex = end;
+                hitSlice.forEach(function (hit) {
+                  if (hit.index < startIndex) {
+                    return;
+                  }
+
+                  var hitWordEnd = hit.index + hit.word.length;
+                  result += text.slice(startIndex, hit.index);
+                  result += '<b>' + text.slice(hit.index, hitWordEnd) + '</b>';
+                  startIndex = hitWordEnd;
+                });
+                result += text.slice(startIndex, endIndex);
+                return result;
+              }
+
+              var postData = {};
+              // 文章总的搜索权重
+              var postWeight = titleHitSlice.length * WEIGHT.title + contentHitSlice.length * WEIGHT.content;
+              // 标记匹配关键词后的标题
+              var postTitle = highlightKeyword(title, titleHitSlice, 0, title.length) || title;
+              // 标记匹配关键词后的内容
+              var postContent;
+              // 显示内容的长度
+              var SHOW_WORD_LENGTH = 200;
+              // 命中关键词前的字符显示长度
+              var SHOW_WORD_FRONT_LENGTH = 20;
+              var SHOW_WORD_END_LENGTH = SHOW_WORD_LENGTH - SHOW_WORD_FRONT_LENGTH;
+
+              // 截取匹配的第一个字符，前后共 200 个字符来显示
+              if (contentHitSlice.length > 0) {
+                var firstIndex = contentHitSlice[0].index;
+                var start = firstIndex > SHOW_WORD_FRONT_LENGTH ? firstIndex - SHOW_WORD_FRONT_LENGTH : 0;
+                var end = firstIndex + SHOW_WORD_END_LENGTH;
+                postContent = highlightKeyword(content, contentHitSlice, start, end);
+              } else { // 未匹配到内容，直接截取前 200 个字符来显示
+                postContent = content.slice(0, SHOW_WORD_LENGTH);
+              }
+              postData.title = postTitle;
+              postData.content = postContent;
+              postData.url = postURL;
+              postData.weight = postWeight;
+              matchPosts.push(postData);
+            }
+          });
+        }
+
+        var resultInnerHtml = '';
+        if (matchPosts.length) {
+          // 按权重递增的顺序排序，使权重大的优先显示
+          matchPosts.sort(function (left, right) {
+            return right.weight - left.weight;
+          });
+          resultInnerHtml += '<ul>';
+          matchPosts.forEach(function (post) {
+            resultInnerHtml += '<li><a class="search-results-title" href="' + post.url + '">';
+            resultInnerHtml += post.title;
+            resultInnerHtml += '</a><div class="search-results-content">';
+            resultInnerHtml += post.content;
+            resultInnerHtml += '</div></li>';
+          });
+          resultInnerHtml += '</ul>';
+        } else {
+          resultInnerHtml += '<div class="search-results-none"><i class="far fa-meh"></i></div>';
+        }
+        $result.html(resultInnerHtml);
+      };
+      $input.on('input', searchPost);
+      $input.on('keyup', function (e) {
+        if (e.keyCode === Stun.utils.codeToKeyCode('Enter')) {
+          searchPost();
+        }
+      });
+    }
+  });
+}
+
+function closeSearch () {
+  $('body').css({ overflow: 'auto' });
+  $('.search-popup').css({ display: 'none' });
+  $('.search-mask').css({ display: 'none' });
+}
+
+window.addEventListener('DOMContentLoaded', function () {
+  Stun.utils.pjaxReloadLocalSearch = function () {
+    $('.header-nav-search').on('click', function (e) {
+      e.stopPropagation();
+      $('body').css('overflow', 'hidden');
+      $('.search-popup')
+        .velocity('stop')
+        .velocity('transition.expandIn', {
+          duration: 300,
+          complete: function () {
+            $('.search-popup input').focus();
+          }
+        });
+      $('.search-mask')
+        .velocity('stop')
+        .velocity('transition.fadeIn', {
+          duration: 300
+        });
+
+      initSearch();
+    });
+    $('.search-mask, .search-close').on('click', function () {
+      closeSearch();
+    });
+    $(document).on('keydown', function (e) {
+      // Escape <=> 27
+      if (e.keyCode === Stun.utils.codeToKeyCode('Escape')) {
+        closeSearch();
+      }
+    });
+  };
+
+  Stun.utils.pjaxReloadLocalSearch();
+}, false);
+
+function safeOpenUrl(url) {
+  var newTab = window.open();
+  newTab.opener = null;
+  newTab.location = url;
+}
+
+function extSearch(engine) {
+  var engines = {
+    google: 'https://www.google.com/search?q=',
+    bing: 'https://cn.bing.com/search?q=',
+    baidu: 'https://www.baidu.com/s?ie=UTF-8&wd=',
+  };
+  var host = window.location.host;
+  var query = $('.search-input input').val().toLowerCase().trim();
+  var uri = engines[engine] + query + ' site:' + host;
+
+  if (query) {
+    safeOpenUrl(uri);
+  } else {
+    Stun.utils.popAlert('warning', '请输入字符');
+  }
+}
+
+var assistSearchList = window.CONFIG.assistSearch;
+
+if (Array.isArray(assistSearchList)) {
+  assistSearchList.forEach(function (name) {
+    document.querySelector('.search-btns-item--' + name).addEventListener('click', function () {
+      extSearch(name);
+    }, false);
+  });
+}</script><link href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" rel="stylesheet" type="text/css"><link href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/copy-tex.css" rel="stylesheet" type="text/css"><script src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/copy-tex.min.js"></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/js-md5@latest/src/md5.min.js"></script><script>function loadGitalk () {
+  if (!document.getElementById('gitalk-container')) {
+    return;
+  }
+
+  var gitalk = new Gitalk({
+    id: md5(window.location.pathname.slice(1)),
+    clientID: '9ff99dad5f63f968ff89',
+    clientSecret: 'a78075e602518c2df48827e684fd5c38e1b0e472',
+    repo: 'cdcq.github.io',
+    owner: 'cdcq',
+    admin: ['cdcq'],
+    distractionFreeMode: 'false',
+    language: 'zh-CN'
+  });
+  gitalk.render('gitalk-container');
+}
+
+if (false) {
+  loadGitalk();
+} else {
+  window.addEventListener('DOMContentLoaded', loadGitalk, false);
+}</script><script src="/js/utils.js?v=2.6.2"></script><script src="/js/stun-boot.js?v=2.6.2"></script><script src="/js/scroll.js?v=2.6.2"></script><script src="/js/header.js?v=2.6.2"></script><script src="/js/sidebar.js?v=2.6.2"></script><script type="application/json" src="/search.xml"></script></body></html>
