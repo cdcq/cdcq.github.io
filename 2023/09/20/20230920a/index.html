@@ -7,7 +7,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://cdcq.github.io/images/expressions/hj-xk.png?show=inline">
 <meta property="article:published_time" content="2023-09-20T08:44:34.000Z">
-<meta property="article:modified_time" content="2023-09-30T03:11:05.608Z">
+<meta property="article:modified_time" content="2023-09-30T03:28:09.322Z">
 <meta property="article:author" content="cdcq">
 <meta property="article:tag" content="总结与集合">
 <meta property="article:tag" content="ACM">
@@ -157,8 +157,7 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 5.4.0"></he
 </ul>
 <p>没看题解，没 1a。</p>
 <p>也是长链剖分例题，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathdefault">n</span><span class="mclose">)</span></span></span></span> 维护深度信息，dp 部分不难，很快就想出来并写完了。但是 RE 了一个小时！最后自拍发现原因！：</p>
-<p><code>dp[x]=dp[y]+1</code> 写成了 <code>dp[x]=y+1</code>。</p>
-<p>
+<p><code>dp[x]=dp[y]+1</code> 写成了 <code>dp[x]=y+1</code>。 
         <img     class="lazyload lazyload-gif"
           src="/images/loading.svg" data-src="/images/expressions/hj-xk.png?show=inline"  style="display: inline-block;"  alt="" />
       </p>
